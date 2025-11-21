@@ -1,0 +1,26 @@
+Package: slcr
+Title: Interface to Altair SLC from R
+Version: 0.0.1.9000
+Author: Michael Mayer [aut, cre]
+Maintainer: Michael Mayer <michael.mayer@posit.co>
+Authors@R: 
+    person("Michael", "Mayer", email = "michael.mayer@posit.co", role = c("aut", "cre"))
+Description: Provides an R interface to Altair SLC, enabling users to execute SLC 
+    code and transfer data between R and SLC environments. This package offers 
+    functionality similar to the 'sasquatch' package but uses Altair SLC instead 
+    of SAS.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+SystemRequirements: Altair SLC (>= 2026)
+Imports:
+    reticulate
+Suggests:
+    testthat (>= 3.0.0),
+    mockery,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Config/quarto/extension: slcr

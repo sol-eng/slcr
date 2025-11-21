@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language id="slc" name="SLC" version="2.0" _section="Source">
+  <metadata>
+    <property name="mimetypes">text/x-slc</property>
+    <property name="globs">*.slc</property>
+    <property name="line-comment-start">*</property>
+    <property name="block-comment-start">/*</property>
+    <property name="block-comment-end">*/</property>
+  </metadata>
+
+  <styles>
+    <style id="comment" name="Comment" map-to="def:comment"/>
+    <style id="string" name="String" map-to="def:string"/>
+    <style id="keyword" name="Keyword" map-to="def:keyword"/>
+    <style id="data-step" name="Data Step" map-to="def:preprocessor"/>
+    <style id="proc" name="Procedure" map-to="def:preprocessor"/>
+    <style id="function" name="Function" map-to="def:function"/>
+    <style id="decimal" name="Decimal" map-to="def:decimal"/>
+    <style id="type" name="Data Type" map-to="def:type"/>
+  </styles>
+
+  <definitions>
+    <context id="slc">
+      <include>
+        <context id="comment" style-ref="comment">
+          <start>/\*</start>
+          <end>\*/</end>
+        </context>
+
+        <context id="line-comment" style-ref="comment">
+          <start>^\s*\*</start>
+          <end>$</end>
+        </context>
+
+        <context id="string" style-ref="string">
+          <start>"</start>
+          <end>"</end>
+        </context>
+
+        <context id="string-single" style-ref="string">
+          <start>'</start>
+          <end>'</end>
+        </context>
+
+        <context id="data-step" style-ref="data-step">
+          <keyword>data</keyword>
+          <keyword>set</keyword>
+          <keyword>merge</keyword>
+          <keyword>update</keyword>
+          <keyword>modify</keyword>
+          <keyword>by</keyword>
+          <keyword>keep</keyword>
+          <keyword>drop</keyword>
+          <keyword>rename</keyword>
+          <keyword>where</keyword>
+          <keyword>if</keyword>
+          <keyword>then</keyword>
+          <keyword>else</keyword>
+          <keyword>do</keyword>
+          <keyword>end</keyword>
+          <keyword>output</keyword>
+          <keyword>delete</keyword>
+          <keyword>stop</keyword>
+          <keyword>array</keyword>
+          <keyword>attrib</keyword>
+          <keyword>infile</keyword>
+          <keyword>input</keyword>
+          <keyword>put</keyword>
+          <keyword>file</keyword>
+          <keyword>cards</keyword>
+          <keyword>datalines</keyword>
+          <keyword>informat</keyword>
+          <keyword>format</keyword>
+          <keyword>length</keyword>
+          <keyword>label</keyword>
+        </context>
+
+        <context id="proc" style-ref="proc">
+          <keyword>proc</keyword>
+          <keyword>run</keyword>
+          <keyword>quit</keyword>
+          <keyword>options</keyword>
+          <keyword>libname</keyword>
+          <keyword>filename</keyword>
+          <keyword>title</keyword>
+          <keyword>footnote</keyword>
+          <keyword>ods</keyword>
+        </context>
+
+        <context id="functions" style-ref="function">
+          <keyword>sum</keyword>
+          <keyword>mean</keyword>
+          <keyword>min</keyword>
+          <keyword>max</keyword>
+          <keyword>n</keyword>
+          <keyword>nmiss</keyword>
+          <keyword>count</keyword>
+          <keyword>abs</keyword>
+          <keyword>log</keyword>
+          <keyword>exp</keyword>
+          <keyword>sqrt</keyword>
+          <keyword>int</keyword>
+          <keyword>round</keyword>
+          <keyword>mod</keyword>
+          <keyword>floor</keyword>
+          <keyword>ceil</keyword>
+          <keyword>sign</keyword>
+          <keyword>substr</keyword>
+          <keyword>trim</keyword>
+          <keyword>upcase</keyword>
+          <keyword>lowcase</keyword>
+          <keyword>propcase</keyword>
+          <keyword>index</keyword>
+          <keyword>find</keyword>
+          <keyword>scan</keyword>
+          <keyword>cat</keyword>
+          <keyword>compress</keyword>
+          <keyword>tranwrd</keyword>
+          <keyword>translate</keyword>
+          <keyword>today</keyword>
+          <keyword>date</keyword>
+          <keyword>time</keyword>
+          <keyword>datetime</keyword>
+          <keyword>year</keyword>
+          <keyword>month</keyword>
+          <keyword>day</keyword>
+          <keyword>weekday</keyword>
+          <keyword>hour</keyword>
+          <keyword>minute</keyword>
+          <keyword>second</keyword>
+          <keyword>put</keyword>
+          <keyword>input</keyword>
+        </context>
+
+        <context id="decimal" style-ref="decimal">
+          <match>\b[0-9]+(\.[0-9]+)?\b</match>
+        </context>
+
+        <context id="types" style-ref="type">
+          <keyword>numeric</keyword>
+          <keyword>character</keyword>
+          <keyword>char</keyword>
+          <keyword>varchar</keyword>
+          <keyword>date</keyword>
+          <keyword>time</keyword>
+          <keyword>datetime</keyword>
+        </context>
+      </include>
+    </context>
+  </definitions>
+</language>

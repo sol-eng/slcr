@@ -1,0 +1,48 @@
+---
+title: "SLC Chunk Options in Quarto"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SLC Chunk Options in Quarto}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Chunk Options for SLC Code Blocks
+
+The `slcr` package supports several chunk options for SLC code blocks in Quarto documents:
+
+### input_data
+
+Specifies an R data frame to be made available in the SLC environment:
+
+```{slc input_data=my_data}
+proc print data=my_data;
+run;
+````
+
+* The data frame must exist in your R environment
+* Specify the name without quotes
+* The data will be available using the same name in SLC
+
+### output_data
+
+Captures SLC output data into an R data frame:
+
+```{slc output_data="want"}
+data want;
+  input column1-column3;
+datalines;
+1 2 3
+4 5 6
+run;
+```
+
+after which `want` is available as dataframe in R. Please note that the output_data name needs to be escaped with double quotes. 
+
+### Standard Chunk Options
+
+SLC chunks also support standard Quarto chunk options:
+
+* echo: Whether to show the code (default: TRUE)
+* eval: Whether to evaluate the code (default: TRUE)
+* include: Whether to include the chunk in output (default: TRUE)

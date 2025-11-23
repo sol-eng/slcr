@@ -9,3 +9,6 @@ engine: slc
 
 highlight-style:
   slc: highlight.js
+
+resources:
+  - styles.css

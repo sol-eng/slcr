@@ -15,7 +15,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 SystemRequirements: Altair SLC (>= 2026)
 Imports:
-    reticulate
+    reticulate,
     knitr
 Suggests:
     testthat (>= 3.0.0),

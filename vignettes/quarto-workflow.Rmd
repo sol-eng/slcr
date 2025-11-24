@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE  # Don't evaluate any code chunks by default
+  eval = FALSE # Don't evaluate any code chunks by default
 )
 ```
 
@@ -23,12 +23,14 @@ The `slcr` package enables seamless integration between R and SLC (Statistical L
 
 First, load the slcr package and initialize a connection:
 
+````{verbatim}
 ```{r init, eval=FALSE}
 library(slcr)
 
 # Initialize SLC connection
 conn <- slc_init()
 ```
+````
 
 ## Basic Workflow: R to SLC to R
 
@@ -36,6 +38,7 @@ conn <- slc_init()
 
 Start by creating or loading data in R:
 
+````{verbatim}
 ```{r create-data, eval=FALSE}
 # Create sample data
 sales_data <- data.frame(
@@ -48,12 +51,13 @@ sales_data <- data.frame(
 # View the data
 head(sales_data)
 ```
+````
 
 ### Step 2: Send Data to SLC
 
 Use the `input_data` chunk option to make R data available in SLC:
 
-````verbatim
+````{verbatim}
 ```{slc input_data=sales_data}
 /* View the data in SLC */
 proc print data=sales_data;
@@ -81,7 +85,7 @@ Obs    region    quarter    sales    costs
 
 Create summary statistics and new datasets:
 
-````verbatim
+````{verbatim}
 ```{slc input_data=sales_data, output_data="summary_stats"}
 /* Calculate profit and summary statistics */
 data sales_with_profit;
@@ -113,6 +117,7 @@ NOTE: The data set WORK.SUMMARY_STATS has 5 observations and 11 variables.
 
 The `summary_stats` dataset is now available in R:
 
+````{verbatim}
 ```{r analyze-results, eval=FALSE}
 # Examine the summary statistics
 str(summary_stats)
@@ -134,6 +139,7 @@ ggplot(regional_summary, aes(x = region, y = avg_profit)) +
   ) +
   theme_minimal()
 ```
+````
 
 ## Advanced Workflows
 
@@ -141,6 +147,7 @@ ggplot(regional_summary, aes(x = region, y = avg_profit)) +
 
 You can pass data back and forth multiple times:
 
+````{verbatim}
 ```{r customer-data, eval=FALSE}
 # Start with R data processing
 customer_data <- data.frame(
@@ -154,6 +161,7 @@ customer_data$age_group <- cut(customer_data$age,
                               breaks = c(0, 30, 50, 70, 100),
                               labels = c("Young", "Middle", "Senior", "Elder"))
 ```
+`````
 
 ````verbatim
 ```{slc input_data=customer_data, output_data="customer_analysis"}
@@ -176,6 +184,7 @@ run;
 ```
 ````
 
+````{verbatim}
 ```{r customer-analysis, eval=FALSE}
 # Continue analysis in R
 library(dplyr)
@@ -198,11 +207,13 @@ customer_final %>%
     .groups = "drop"
   )
 ```
+````
 
 ### Working with External Data Files
 
 You can also work with external data files:
 
+````{verbatim}
 ```{r external-data, eval=FALSE}
 # Read data from CSV
 if (file.exists("data/survey_data.csv")) {
@@ -217,6 +228,7 @@ if (file.exists("data/survey_data.csv")) {
   )
 }
 ```
+````
 
 ````verbatim
 ```{slc input_data=survey_data}
@@ -247,6 +259,7 @@ run;
 
 Always prepare and validate your data in R before sending to SLC:
 
+````{verbatim}
 ```{r data-prep, eval=FALSE}
 # Clean and validate data
 clean_data <- raw_data %>%
@@ -260,11 +273,13 @@ clean_data <- raw_data %>%
 # Check data quality
 summary(clean_data)
 ```
+````
 
 ### 2. Error Handling
 
 Use R's error handling when working with SLC results:
 
+````{verbatim}
 ```{r error-handling, eval=FALSE}
 # Safely read SLC output
 tryCatch({
@@ -279,6 +294,7 @@ tryCatch({
   analysis_results <- NULL
 })
 ```
+`````
 
 ### 3. Documentation
 
@@ -303,6 +319,7 @@ run;
 
 Set up your environment for reproducibility:
 
+````{verbatim}
 ```{r reproducibility, eval=FALSE}
 # Set seed for reproducible results
 set.seed(123)
@@ -313,6 +330,7 @@ sessionInfo()
 # Save workspace for later use
 save.image("analysis_workspace.RData")
 ```
+````
 
 ## Troubleshooting
 
@@ -324,6 +342,7 @@ save.image("analysis_workspace.RData")
 
 ### Debugging Tips
 
+````{verbatim}
 ```{r debugging, eval=FALSE}
 # Check data before sending to SLC
 str(my_data)
@@ -342,6 +361,7 @@ if (length(logs$lst) > 0) {
   cat("SLC Output:\n", paste(logs$lst, collapse = "\n"))
 }
 ```
+````
 
 ## Conclusion
 

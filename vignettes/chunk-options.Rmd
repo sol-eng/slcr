@@ -7,20 +7,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-# Create example data for documentation purposes
-my_data <- data.frame(x = 1:3, y = letters[1:3])
-
-knitr::opts_chunk$set(eval = FALSE)
-knitr::opts_template$set(slc = list(eval = FALSE))
-knitr::opts_hooks$set(engine = function(options) {
-  if (options$engine == 'slc') {
-    options$eval <- FALSE
-  }
-  options
-})
-```
-
 ## Chunk Options for SLC Code Blocks
 
 The `slcr` package supports several chunk options for SLC code blocks in Quarto documents:
@@ -29,10 +15,12 @@ The `slcr` package supports several chunk options for SLC code blocks in Quarto 
 
 Specifies an R data frame to be made available in the SLC environment:
 
+````{verbatim}
 ```{slc input_data=my_data}
 proc print data=my_data;
 run;
 ```
+`````
 
 * The data frame must exist in your R environment
 * Specify the name without quotes
@@ -42,6 +30,7 @@ run;
 
 Captures SLC output data into an R data frame:
 
+````{verbatim}
 ```{slc output_data="want"}
 data want;
   input column1-column3;
@@ -50,6 +39,7 @@ datalines;
 4 5 6
 run;
 ```
+``````
 
 after which `want` is available as dataframe in R. Please note that the output_data name needs to be escaped with double quotes. 
 

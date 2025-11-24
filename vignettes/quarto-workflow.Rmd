@@ -230,7 +230,7 @@ if (file.exists("data/survey_data.csv")) {
 ```
 ````
 
-````verbatim
+````{verbatim}
 ```{slc input_data=survey_data}
 /* Advanced statistical analysis */
 proc freq data=survey_data;

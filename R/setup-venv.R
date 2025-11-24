@@ -11,7 +11,8 @@
 #' @param force Logical, whether to force recreation of the environment if it exists
 #' @export
 setup_python_env <- function(force = FALSE) {
-  venv_dir <- file.path(system.file(package = "slcr"), "python", "venv")
+  # Use R's user data directory for package-specific venv
+  venv_dir <- file.path(rappdirs::user_data_dir("slcr"), "venvs")
 
   # If environment exists and we're not forcing recreation, just use it
   if (dir.exists(venv_dir) && !force) {

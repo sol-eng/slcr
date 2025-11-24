@@ -25,3 +25,5 @@ Suggests:
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/quarto/extension: slcr
+URL: https://github.com/michaelmayer2/slcr, https://michaelmayer2.github.io/slcr/
+BugReports: https://github.com/michaelmayer2/slcr/issues

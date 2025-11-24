@@ -38,8 +38,8 @@ str(logs)
 main_log <- get_slc_log(conn, type = "log")
 cat(main_log)
 
-# Get only the error log
-error_log <- get_slc_log(conn, type = "error")
+# Get only the listing output
+error_log <- get_slc_log(conn, type = "lst")
 cat(error_log)
 
 # Can also be used without explicit connection

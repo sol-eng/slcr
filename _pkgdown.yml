@@ -1,0 +1,57 @@
+# _pkgdown.yml
+url: https://michaelmayer2.github.io/slcr
+
+template:
+  bootstrap: 5
+
+home:
+  title: "slcr: SLC Integration for R and Quarto"
+  description: >
+    The slcr package provides seamless integration between SLC (Statistical Linear Combinations) 
+    and R/Quarto environments, enabling statistical analysis using SLC syntax directly in 
+    Quarto documents.
+
+reference:
+- title: "Core Functions"
+  desc: "Main functions for SLC integration"
+  contents:
+  - slc_engine
+  - slc_init
+  - slc_submit
+
+- title: "Data Management"
+  desc: "Functions for reading and writing SLC data"
+  contents:
+  - read_slc_data
+  - write_slc_data
+
+- title: "Quarto Integration"
+  desc: "Functions for Quarto document integration"
+  contents:
+  - setup_slc_quarto
+  - slc_quarto_resources
+  - is_quarto_context
+
+- title: "Utilities"
+  desc: "Helper and utility functions"
+  contents:
+  - setup_python_env
+  - get_slc_log
+  - slc_resource_path
+
+articles:
+- title: "Getting Started"
+  navbar: ~
+  contents:
+  - chunk-options
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, tutorials, news]
+    right: [search, github]
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Chunk Options
+        href: articles/chunk-options.html

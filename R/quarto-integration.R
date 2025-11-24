@@ -7,19 +7,43 @@ slc_resource_path <- function(file) {
 }
 
 #' Include SLC Quarto resources in document
+#'
+#' This function includes CSS and JavaScript resources to enhance SLC code chunks
+#' in Quarto documents. It extracts the same functionality from the SLC Quarto
+#' extension's Lua filter to ensure consistency.
+#'
+#' @section Quarto Integration:
+#' There are two ways to use SLC with Quarto:
+#'
+#' 1. Using the `slc_quarto_resources()` function:
+#'    ```r
+#'    library(slcr)
+#'    slc_quarto_resources()
+#'    ```
+#'
+#' 2. Installing the Quarto extension (recommended):
+#'    ```bash
+#'    quarto add michaelmayer2/slc-quarto-ext
+#'    ```
+#'    Then add `filters: - slc` to your document YAML header.
+#'
+#' Both approaches provide identical functionality.
+#'
 #' @return HTML content for SLC styling and collapsible functionality
 #' @export
 slc_quarto_resources <- function() {
-  html_path <- system.file("resources", "slc-quarto.html", package = "slcr")
-  
+  html_path <- system.file("resources", "slc-resources.html", package = "slcr")
+
   if (!file.exists(html_path)) {
-    warning("SLC Quarto resources not found. Make sure slcr package is properly installed.")
-    return("")
+    warning(
+      "SLC Quarto resources not found. Make sure slcr package is properly installed."
+    )
+    return(htmltools::HTML(""))
   }
-  
+
   # Read the HTML content
   html_content <- paste(readLines(html_path, warn = FALSE), collapse = "\n")
-  
+
   # Return raw HTML that will be included directly
   return(htmltools::HTML(html_content))
 }

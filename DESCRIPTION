@@ -1,6 +1,6 @@
 Package: slcr
 Title: Interface to Altair SLC from R
-Version: 0.1.1
+Version: 0.0.1
 Author: Michael Mayer [aut, cre]
 Maintainer: Michael Mayer <michael.mayer@posit.co>
 Authors@R: 

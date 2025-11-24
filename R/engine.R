@@ -31,6 +31,10 @@
 #' behavior to make SLC output data available for subsequent R code chunks in
 #' Quarto documents.
 #'
+#' @note The assignment to the global environment (using \code{assign()}) is
+#' intentional and necessary for knitr engine functionality. This allows SLC
+#' output data to be accessible in subsequent code chunks within Quarto documents.
+#'
 #' @importFrom knitr engine_output
 #' @export
 #'
@@ -94,6 +98,7 @@ slc_engine <- function(options) {
         if (!is.data.frame(input_data)) {
           stop("input_data must refer to a data.frame")
         }
+
         write_slc_data(input_data, options$input_data, connection)
       }
 
@@ -114,6 +119,8 @@ slc_engine <- function(options) {
         tryCatch(
           {
             output_df <- read_slc_data(options$output_data, connection)
+            # NOTE: Global assignment is intentional for knitr engine functionality.
+            # This makes SLC output data available in subsequent Quarto code chunks.
             assign(options$output_data, output_df, envir = .GlobalEnv)
           },
           error = function(e) {

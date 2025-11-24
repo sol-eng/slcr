@@ -44,6 +44,7 @@ articles:
   navbar: ~
   contents:
   - chunk-options
+  - quarto-workflow
 
 navbar:
   structure:
@@ -55,3 +56,5 @@ navbar:
       menu:
       - text: Chunk Options
         href: articles/chunk-options.html
+      - text: Quarto Workflow
+        href: articles/quarto-workflow.html

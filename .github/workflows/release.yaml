@@ -53,11 +53,12 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          # Switch to main branch and update it
-          # git checkout main
+          # Add and commit the DESCRIPTION change
           git add DESCRIPTION
-          # git commit -m "Auto-update version to ${{ steps.get_version.outputs.version }} [skip ci]" || echo "No changes to commit"
-          # git push origin main
+          git commit -m "Auto-update version to ${{ steps.get_version.outputs.version }} [skip ci]" || echo "No changes to commit"
+          
+          # Push the commit to main branch (we're currently on the tag)
+          git push origin HEAD:main
 
       - name: Build package
         run: |

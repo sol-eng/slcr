@@ -86,7 +86,7 @@ After which `want` is available as dataframe in R:
 str(want)
 # 'data.frame': 2 obs. of 3 variables:
 #  $ column1: num 1 4
-#  $ column2: num 2 5  
+#  $ column2: num 2 5
 #  $ column3: num 3 6
 
 head(want)

@@ -16,12 +16,13 @@ RoxygenNote: 7.3.3
 SystemRequirements: Altair SLC (>= 2026)
 Imports:
     reticulate,
-    knitr
+    knitr,
+    rappdirs
 Suggests:
     testthat (>= 3.0.0),
     withr,
-    knitr,
-    rmarkdown
+    rmarkdown,
+    htmltools
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/quarto/extension: slcr

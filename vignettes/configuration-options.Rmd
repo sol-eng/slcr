@@ -95,7 +95,9 @@ options(config.slc.python = "/home/user/.pyenv/versions/3.11.0/bin/python")
 options(config.slc.python = "/home/user/myproject/.venv/bin/python")
 
 # Using pipenv
-options(config.slc.python = "/home/user/.local/share/virtualenvs/myproject-abc123/bin/python")
+options(
+  config.slc.python = "/home/user/.local/share/virtualenvs/myproject-abc123/bin/python"
+)
 ```
 
 ## Option 2: config.slc.pythonpath
@@ -197,7 +199,7 @@ if (interactive()) {
     config.slc.python = "/home/user/miniconda3/envs/slc-dev/bin/python",
     config.slc.pythonpath = "/home/user/slc-dev/python"
   )
-  
+
   message("Loaded SLC development configuration")
 }
 ```
@@ -356,15 +358,15 @@ cat("  SLC Path:", getOption("config.slc.pythonpath"), "\n")
 validate_slc_config <- function() {
   python_exe <- getOption("config.slc.python", Sys.which("python3"))
   slc_path <- getOption("config.slc.pythonpath", "/opt/altair/slc/2026/python")
-  
+
   if (!file.exists(python_exe)) {
     stop("Python executable not found: ", python_exe)
   }
-  
+
   if (!dir.exists(slc_path)) {
     stop("SLC Python path not found: ", slc_path)
   }
-  
+
   message("Configuration validated successfully")
 }
 

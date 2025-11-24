@@ -6,6 +6,54 @@
 \usage{
 slc_engine(options)
 }
+\arguments{
+\item{options}{A list of chunk options from knitr, including:
+\describe{
+\item{code}{Character vector containing the SLC code to execute}
+\item{input_data}{Name of R data.frame to make available in SLC (optional)}
+\item{output_data}{Name for capturing SLC output data into R (optional)}
+\item{eval}{Whether to evaluate the code (default: TRUE)}
+\item{echo}{Whether to show the code (default: TRUE)}
+\item{include}{Whether to include output (default: TRUE)}
+}}
+}
+\value{
+A knitr engine output object containing the code and results
+}
 \description{
-Provides support for executing SLC code blocks in Quarto documents
+Provides support for executing SLC code blocks in Quarto documents.
+This function is automatically called by knitr when processing SLC code chunks.
+}
+\details{
+This function handles the execution of SLC code within Quarto documents by:
+\itemize{
+\item Initializing SLC connection if needed
+\item Transferring input data from R to SLC if specified
+\item Executing the SLC code
+\item Capturing output and logs
+\item Transferring output data from SLC to R if specified
+}
+
+When \code{output_data} is specified, the function assigns the resulting
+data frame to the global environment using \code{assign()}. This is intentional
+behavior to make SLC output data available for subsequent R code chunks in
+Quarto documents.
+}
+\examples{
+\dontrun{
+# This function is typically called automatically by knitr
+# when processing SLC code chunks in Quarto documents
+
+# Example chunk options that would be passed:
+options <- list(
+  code = c("data test;", "  x = 1;", "run;"),
+  input_data = "mtcars",
+  output_data = "results",
+  eval = TRUE,
+  echo = TRUE
+)
+
+# The engine would be called like this:
+# slc_engine(options)
+}
 }

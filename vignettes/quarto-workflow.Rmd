@@ -1,0 +1,354 @@
+---
+title: "Working with R and SLC in Quarto"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Working with R and SLC in Quarto}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Introduction
+
+The `slcr` package enables seamless integration between R and SLC (Statistical Linear Combinations) within Quarto documents. This vignette demonstrates how to combine R data manipulation with SLC statistical procedures in a single document.
+
+## Getting Started
+
+First, load the slcr package and initialize a connection:
+
+```{r}
+library(slcr)
+
+# Initialize SLC connection
+conn <- slc_init()
+```
+
+## Basic Workflow: R to SLC to R
+
+### Step 1: Prepare Data in R
+
+Start by creating or loading data in R:
+
+```{r}
+# Create sample data
+sales_data <- data.frame(
+  region = c("North", "South", "East", "West", "North", "South"),
+  quarter = c("Q1", "Q1", "Q1", "Q1", "Q2", "Q2"),
+  sales = c(1200, 1500, 1100, 1300, 1400, 1600),
+  costs = c(800, 900, 750, 850, 900, 950)
+)
+
+# View the data
+head(sales_data)
+```
+
+### Step 2: Send Data to SLC
+
+Use the `input_data` chunk option to make R data available in SLC:
+
+````verbatim
+```{slc input_data=sales_data}
+/* View the data in SLC */
+proc print data=sales_data;
+  title "Sales Data Overview";
+run;
+```
+````
+
+**Expected Output:**
+```
+                            The SLC System
+                          Sales Data Overview
+
+Obs    region    quarter    sales    costs
+
+ 1     North       Q1       1200      800
+ 2     South       Q1       1500      900
+ 3     East        Q1       1100      750
+ 4     West        Q1       1300      850
+ 5     North       Q2       1400      900
+ 6     South       Q2       1600      950
+```
+
+### Step 3: Perform Analysis in SLC
+
+Create summary statistics and new datasets:
+
+````verbatim
+```{slc input_data=sales_data, output_data="summary_stats"}
+/* Calculate profit and summary statistics */
+data sales_with_profit;
+  set sales_data;
+  profit = sales - costs;
+  profit_margin = (profit / sales) * 100;
+run;
+
+/* Create summary by region */
+proc means data=sales_with_profit noprint;
+  class region;
+  var sales costs profit profit_margin;
+  output out=summary_stats 
+    mean=avg_sales avg_costs avg_profit avg_margin
+    sum=total_sales total_costs total_profit;
+run;
+```
+````
+
+**Expected Output:**
+```
+NOTE: There were 6 observations read from the data set WORK.SALES_DATA.
+NOTE: The data set WORK.SALES_WITH_PROFIT has 6 observations and 6 variables.
+NOTE: There were 6 observations read from the data set WORK.SALES_WITH_PROFIT.
+NOTE: The data set WORK.SUMMARY_STATS has 5 observations and 11 variables.
+```
+
+### Step 4: Analyze Results in R
+
+The `summary_stats` dataset is now available in R:
+
+```{r}
+# Examine the summary statistics
+str(summary_stats)
+head(summary_stats)
+
+# Create visualizations
+library(ggplot2)
+
+# Filter out the overall summary (_TYPE_=0)
+regional_summary <- summary_stats[summary_stats$`_TYPE_` == 1, ]
+
+# Plot average profit by region
+ggplot(regional_summary, aes(x = region, y = avg_profit)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Average Profit by Region",
+    x = "Region",
+    y = "Average Profit ($)"
+  ) +
+  theme_minimal()
+```
+
+## Advanced Workflows
+
+### Multiple Data Exchanges
+
+You can pass data back and forth multiple times:
+
+```{r}
+# Start with R data processing
+customer_data <- data.frame(
+  customer_id = 1:100,
+  age = sample(18:80, 100, replace = TRUE),
+  income = rnorm(100, 50000, 15000)
+)
+
+# Add customer segments
+customer_data$age_group <- cut(customer_data$age, 
+                              breaks = c(0, 30, 50, 70, 100),
+                              labels = c("Young", "Middle", "Senior", "Elder"))
+```
+
+````verbatim
+```{slc input_data=customer_data, output_data="customer_analysis"}
+/* Perform detailed customer analysis */
+proc means data=customer_data;
+  class age_group;
+  var income;
+  output out=customer_analysis
+    mean=avg_income
+    std=std_income
+    min=min_income
+    max=max_income;
+run;
+
+/* Create income quintiles */
+proc rank data=customer_data out=customer_ranked groups=5;
+  var income;
+  ranks income_quintile;
+run;
+```
+````
+
+```{r}
+# Continue analysis in R
+library(dplyr)
+
+# Merge the analysis results
+customer_final <- customer_data %>%
+  left_join(customer_analysis, by = "age_group") %>%
+  mutate(
+    income_z_score = (income - avg_income) / std_income,
+    high_value = income > quantile(income, 0.8)
+  )
+
+# Summary table
+customer_final %>%
+  group_by(age_group) %>%
+  summarise(
+    count = n(),
+    avg_income = mean(income),
+    high_value_pct = mean(high_value) * 100,
+    .groups = "drop"
+  )
+```
+
+### Working with External Data Files
+
+You can also work with external data files:
+
+```{r}
+# Read data from CSV
+if (file.exists("data/survey_data.csv")) {
+  survey_data <- read.csv("data/survey_data.csv")
+} else {
+  # Create sample data for demonstration
+  survey_data <- data.frame(
+    respondent_id = 1:500,
+    satisfaction = sample(1:5, 500, replace = TRUE),
+    department = sample(c("Sales", "Marketing", "IT", "HR"), 500, replace = TRUE),
+    tenure = sample(1:20, 500, replace = TRUE)
+  )
+}
+```
+
+````verbatim
+```{slc input_data=survey_data}
+/* Advanced statistical analysis */
+proc freq data=survey_data;
+  tables department*satisfaction / chisq;
+  title "Satisfaction by Department";
+run;
+
+proc corr data=survey_data;
+  var satisfaction tenure;
+  title "Correlation: Satisfaction vs Tenure";
+run;
+
+/* ANOVA */
+proc anova data=survey_data;
+  class department;
+  model satisfaction = department;
+  means department / tukey;
+  title "ANOVA: Satisfaction by Department";
+run;
+```
+````
+
+## Best Practices
+
+### 1. Data Preparation
+
+Always prepare and validate your data in R before sending to SLC:
+
+```{r}
+# Clean and validate data
+clean_data <- raw_data %>%
+  filter(!is.na(key_variable)) %>%
+  mutate(
+    key_variable = as.numeric(key_variable),
+    category = factor(category)
+  ) %>%
+  arrange(id)
+
+# Check data quality
+summary(clean_data)
+```
+
+### 2. Error Handling
+
+Use R's error handling when working with SLC results:
+
+```{r}
+# Safely read SLC output
+tryCatch({
+  analysis_results <- read_slc_data("analysis_output", conn)
+  
+  if (nrow(analysis_results) == 0) {
+    warning("No results returned from SLC analysis")
+  }
+  
+}, error = function(e) {
+  message("Error reading SLC results: ", e$message)
+  analysis_results <- NULL
+})
+```
+
+### 3. Documentation
+
+Document your workflow clearly:
+
+````verbatim
+```{slc input_data=model_data, output_data="model_results"}
+/* 
+Purpose: Fit logistic regression model for customer churn prediction
+Input: model_data (customer features and churn indicator)
+Output: model_results (parameter estimates and fit statistics)
+*/
+
+proc logistic data=model_data;
+  model churn = age income satisfaction tenure / selection=stepwise;
+  output out=model_results p=predicted_prob;
+run;
+```
+````
+
+### 4. Reproducibility
+
+Set up your environment for reproducibility:
+
+```{r}
+# Set seed for reproducible results
+set.seed(123)
+
+# Document package versions
+sessionInfo()
+
+# Save workspace for later use
+save.image("analysis_workspace.RData")
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Data type mismatches**: Ensure R data types are compatible with SLC
+2. **Missing values**: Handle NAs appropriately before sending to SLC
+3. **Variable names**: Use valid SLC variable names (no spaces, special characters)
+
+### Debugging Tips
+
+```{r}
+# Check data before sending to SLC
+str(my_data)
+summary(my_data)
+
+# Verify SLC connection
+if (exists("conn")) {
+  message("SLC connection active")
+} else {
+  conn <- slc_init()
+}
+
+# Check SLC logs for errors
+logs <- get_slc_log(conn, "all")
+if (length(logs$lst) > 0) {
+  cat("SLC Output:\n", paste(logs$lst, collapse = "\n"))
+}
+```
+
+## Conclusion
+
+The `slcr` package provides a powerful bridge between R's data manipulation capabilities and SLC's statistical procedures. By combining both tools in Quarto documents, you can create comprehensive, reproducible analyses that leverage the strengths of both environments.
+
+Key benefits:
+- **Seamless data exchange** between R and SLC
+- **Reproducible workflows** in a single document
+- **Rich visualizations** combining SLC analysis with R graphics
+- **Flexible analysis pipelines** using the best tool for each task

@@ -1,4 +1,4 @@
-# .github/workflows/release.yaml (simplified)
+# .github/workflows/release.yaml
 on:
   push:
     tags:
@@ -11,14 +11,46 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v2
+
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version extracted: $VERSION"
+
+      - name: Update DESCRIPTION version
+        run: |
+          # Update version in DESCRIPTION file
+          sed -i "s/^Version: .*/Version: ${{ steps.get_version.outputs.version }}/" DESCRIPTION
+          
+          # Verify the change
+          echo "Updated DESCRIPTION version:"
+          grep "^Version:" DESCRIPTION
+
+      - name: Commit version update back to main
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Switch to main branch and update it
+          git checkout main
+          git add DESCRIPTION
+          git commit -m "Auto-update version to ${{ steps.get_version.outputs.version }} [skip ci]" || echo "No changes to commit"
+          git push origin main
 
       - name: Build package
         run: |
@@ -30,3 +62,17 @@ jobs:
         with:
           files: ${{ env.PKG_FILE }}
           generate_release_notes: true
+          body: |
+            ## Version ${{ steps.get_version.outputs.version }}
+            
+            This release automatically updates the package version to ${{ steps.get_version.outputs.version }}.
+            
+            ### Installation
+            
+            ```r
+            # Install from GitHub
+            pak::pak("sol-eng/slcr@${{ steps.get_version.outputs.version }}")
+            
+            # Or using remotes
+            remotes::install_github("sol-eng/slcr@${{ steps.get_version.outputs.version }}")
+            ```

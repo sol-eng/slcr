@@ -39,26 +39,26 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version extracted: $VERSION"
 
-      - name: Update DESCRIPTION version
+      - name: Switch to main and update DESCRIPTION
         run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Switch to main branch and pull latest changes
+          git checkout main
+          git pull origin main
+          
           # Update version in DESCRIPTION file
           sed -i "s/^Version: .*/Version: ${{ steps.get_version.outputs.version }}/" DESCRIPTION
           
           # Verify the change
           echo "Updated DESCRIPTION version:"
           grep "^Version:" DESCRIPTION
-
-      - name: Commit version update back to main
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
           
-          # Add and commit the DESCRIPTION change
+          # Commit and push the change
           git add DESCRIPTION
           git commit -m "Auto-update version to ${{ steps.get_version.outputs.version }} [skip ci]" || echo "No changes to commit"
-          
-          # Push the commit to main branch (we're currently on the tag)
-          git push origin HEAD:main
+          git push origin main
 
       - name: Build package
         run: |

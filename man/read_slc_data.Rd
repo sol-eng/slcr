@@ -17,3 +17,22 @@ R data.frame
 \description{
 Read SLC Dataset into R
 }
+\examples{
+\dontrun{
+# Initialize connection
+conn <- slc_init()
+
+# First write some data
+write_slc_data(mtcars, "mtcars_dataset", conn)
+
+# Then read it back
+mtcars_copy <- read_slc_data("mtcars_dataset", conn)
+
+# Compare dimensions
+dim(mtcars)
+dim(mtcars_copy)
+
+# Compare elememt by element
+mtcars_copy == mtcars
+}
+}

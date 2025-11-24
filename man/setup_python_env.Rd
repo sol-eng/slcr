@@ -9,10 +9,48 @@ setup_python_env(force = FALSE)
 \arguments{
 \item{force}{Logical, whether to force recreation of the environment if it exists}
 }
+\value{
+Invisibly returns the path to the created virtual environment directory
+}
 \description{
 Creates a virtual environment and installs required Python packages.
-Setup Python Environment
-
-Creates a virtual environment and installs required Python packages.
 This should be run once after package installation.
+}
+\details{
+This function creates a Python virtual environment specifically for the slcr package
+and installs the required dependencies (currently pandas).
+\subsection{Python Configuration}{
+
+The function uses the \code{config.slc.python} option to specify which Python executable
+to use for creating the virtual environment. You can set this option before calling
+the function:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{# Use a specific Python installation
+options(config.slc.python = "/usr/bin/python3.11")
+setup_python_env()
+
+# Or use a conda environment
+options(config.slc.python = "/home/user/miniconda3/envs/myenv/bin/python")
+setup_python_env()
+}\if{html}{\out{</div>}}
+
+If \code{config.slc.python} is not set, the function will automatically use the result
+of \code{Sys.which("python3")} as the default Python executable.
+}
+}
+\examples{
+\dontrun{
+# Basic setup with default Python
+setup_python_env()
+
+# Setup with specific Python version
+options(config.slc.python = "/usr/bin/python3.11")
+setup_python_env()
+
+# Force recreation of existing environment
+setup_python_env(force = TRUE)
+
+# Check which Python will be used
+getOption("config.slc.python", default = Sys.which("python3"))
+}
 }

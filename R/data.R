@@ -3,7 +3,7 @@
 #'
 #' @param data R data.frame to convert
 #' @param dataset_name Name for the SLC dataset
-#' @param connection SLC connection object
+#' @param connection SLC connection object. If NULL (default), a new connection will be created automatically.
 #'
 #' @return Invisible NULL
 #' @export
@@ -13,12 +13,12 @@
 #' # Initialize connection
 #' conn <- slc_init()
 #'
-#' # Write R dataframe to SAS
-#' write_slc_data(mtcars,"mtcars_sas",conn)
+#' # Write R dataframe to SLC
+#' write_slc_data(mtcars, "mtcars_sas", conn)
 #'
-#' # Read SAS dataframe back into R
-#' mtcars_new <- read_slc_data("mtcars_sas",conn)
-#'
+#' # Verify the dataset was created
+#' print("Dataset written successfully")
+#' }
 write_slc_data <- function(data, dataset_name, connection = NULL) {
   if (is.null(connection)) {
     connection <- slc_init()
@@ -40,6 +40,24 @@ write_slc_data <- function(data, dataset_name, connection = NULL) {
 #'
 #' @return R data.frame
 #' @export
+#' @examples
+#' \dontrun{
+#' # Initialize connection
+#' conn <- slc_init()
+#'
+#' # First write some data
+#' write_slc_data(mtcars, "mtcars_dataset", conn)
+#'
+#' # Then read it back
+#' mtcars_copy <- read_slc_data("mtcars_dataset", conn)
+#'
+#' # Compare dimensions
+#' dim(mtcars)
+#' dim(mtcars_copy)
+#'
+#' # Compare elememt by element
+#' mtcars_copy == mtcars
+#' }
 read_slc_data <- function(dataset_name, connection = NULL) {
   if (is.null(connection)) {
     connection <- slc_init()

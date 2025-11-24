@@ -12,3 +12,21 @@ An SLC connection object
 \description{
 Creates a connection to Altair SLC using the Python SDK.
 }
+\examples{
+\dontrun{
+# Initialize a new SLC connection
+conn <- slc_init()
+
+# Check if connection is working
+class(conn)
+
+# The connection can be reused for multiple operations
+write_slc_data(mtcars, "cars", conn)
+}
+
+# Example without running SLC (for testing)
+if (FALSE) {
+  conn <- slc_init()
+  print("SLC connection established")
+}
+}

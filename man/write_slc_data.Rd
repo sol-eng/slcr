@@ -11,11 +11,23 @@ write_slc_data(data, dataset_name, connection = NULL)
 
 \item{dataset_name}{Name for the SLC dataset}
 
-\item{connection}{SLC connection object}
+\item{connection}{SLC connection object. If NULL (default), a new connection will be created automatically.}
 }
 \value{
 Invisible NULL
 }
 \description{
 Convert R DataFrame to SLC Dataset
+}
+\examples{
+\dontrun{
+# Initialize connection
+conn <- slc_init()
+
+# Write R dataframe to SLC
+write_slc_data(mtcars, "mtcars_sas", conn)
+
+# Verify the dataset was created
+print("Dataset written successfully")
+}
 }

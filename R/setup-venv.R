@@ -2,14 +2,51 @@
 #'
 #' @description
 #' Creates a virtual environment and installs required Python packages.
-#' Setup Python Environment
-#'
-#' @description
-#' Creates a virtual environment and installs required Python packages.
 #' This should be run once after package installation.
 #'
 #' @param force Logical, whether to force recreation of the environment if it exists
+#'
+#' @details
+#' This function creates a Python virtual environment specifically for the slcr package
+#' and installs the required dependencies (currently pandas).
+#'
+#' ## Python Configuration
+#'
+#' The function uses the `config.slc.python` option to specify which Python executable
+#' to use for creating the virtual environment. You can set this option before calling
+#' the function:
+#'
+#' ```r
+#' # Use a specific Python installation
+#' options(config.slc.python = "/usr/bin/python3.11")
+#' setup_python_env()
+#'
+#' # Or use a conda environment
+#' options(config.slc.python = "/home/user/miniconda3/envs/myenv/bin/python")
+#' setup_python_env()
+#' ```
+#'
+#' If `config.slc.python` is not set, the function will automatically use the result
+#' of `Sys.which("python3")` as the default Python executable.
+#'
+#' @return Invisibly returns the path to the created virtual environment directory
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Basic setup with default Python
+#' setup_python_env()
+#'
+#' # Setup with specific Python version
+#' options(config.slc.python = "/usr/bin/python3.11")
+#' setup_python_env()
+#'
+#' # Force recreation of existing environment
+#' setup_python_env(force = TRUE)
+#'
+#' # Check which Python will be used
+#' getOption("config.slc.python", default = Sys.which("python3"))
+#' }
 setup_python_env <- function(force = FALSE) {
   # Use R's user data directory for package-specific venv
   venv_dir <- file.path(rappdirs::user_data_dir("slcr"), "venvs")

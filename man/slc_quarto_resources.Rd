@@ -11,8 +11,8 @@ HTML content for SLC styling and collapsible functionality
 }
 \description{
 This function includes CSS and JavaScript resources to enhance SLC code chunks
-in Quarto documents with grey backgrounds, SAS syntax highlighting, and
-collapsible outputs.
+in Quarto documents. It extracts the same functionality from the SLC Quarto
+extension's Lua filter to ensure consistency.
 }
 \section{Quarto Integration}{
 
@@ -28,12 +28,9 @@ slc_quarto_resources()
 \if{html}{\out{<div class="sourceCode bash">}}\preformatted{quarto add sol-eng/slc-quarto-ext
 }\if{html}{\out{</div>}}
 
-Then in your document:
-
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{library(slcr)
-}\if{html}{\out{</div>}}
+Then add \code{filters: - slc} to your document YAML header.
 }
 
-The extension approach is recommended as it provides a cleaner integration.
+Both approaches provide identical functionality.
 }
 

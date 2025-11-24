@@ -9,11 +9,28 @@ slc_submit(code, connection = NULL)
 \arguments{
 \item{code}{Character string containing SLC code}
 
-\item{connection}{SLC connection object}
+\item{connection}{SLC connection object. If NULL (default), a new connection will be created automatically.}
 }
 \value{
 Results from SLC execution
 }
 \description{
 Submit SLC Code
+}
+\examples{
+\dontrun{
+# Initialize connection
+conn <- slc_init()
+
+# Submit basic SLC code
+slc_submit("data test; x = 1; y = 2; run;", conn)
+
+# Submit code with automatic connection
+slc_submit("proc print data=sashelp.class; run;")
+
+# Read and submit the SAS code from file (sas_file)
+sas_code <- readLines(sas_file)
+
+slc_submit(paste(sas_code, collapse = "\n"), conn)
+}
 }

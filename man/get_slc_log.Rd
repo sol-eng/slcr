@@ -15,7 +15,7 @@ get_slc_log(connection = NULL, type = "all")
 "error" for error log, or "all" for both (default)}
 }
 \value{
-Log contents
+Log contents as character vector or list
 
 A character vector containing the log contents, or a list of logs if type="all"
 }
@@ -23,6 +23,39 @@ A character vector containing the log contents, or a list of logs if type="all"
 Retrieves the contents of the SLC log file from the most recent SLC submission
 }
 \examples{
+\dontrun{
+# Initialize connection and run some code
+conn <- slc_init()
+slc_submit("data test; x = 1; run;", conn)
+
+# Get all log output
+logs <- get_slc_log(conn, "all")
+str(logs)
+
+# Get only the log portion
+log_only <- get_slc_log(conn, "log")
+cat(log_only, sep = "\n")
+
+# Get only error/listing output
+errors <- get_slc_log(conn, "error")
+
+# Using automatic connection
+slc_submit("proc print data=sashelp.class; run;")
+recent_logs <- get_slc_log(type = "all")
+}
+
+# Example of log types
+if (FALSE) {
+  conn <- slc_init()
+
+  # Run code that generates log output
+  slc_submit("data example; x = 1; y = x * 2; run;", conn)
+
+  # Different ways to access logs
+  all_output <- get_slc_log(conn, "all")      # Both log and listing
+  log_output <- get_slc_log(conn, "log")      # Just the log
+  lst_output <- get_slc_log(conn, "error")    # Just the listing
+}
 \dontrun{
 # Initialize connection
 conn <- slc_init()

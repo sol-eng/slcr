@@ -1,0 +1,9 @@
+^slcr\.Rproj$
+^\.Rproj\.user$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
+^README\.qmd$
+^test\.qmd$
+^slcr-package\.R$

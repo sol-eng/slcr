@@ -161,9 +161,9 @@ customer_data$age_group <- cut(customer_data$age,
                               breaks = c(0, 30, 50, 70, 100),
                               labels = c("Young", "Middle", "Senior", "Elder"))
 ```
-`````
+````
 
-````verbatim
+````{verbatim}
 ```{slc input_data=customer_data, output_data="customer_analysis"}
 /* Perform detailed customer analysis */
 proc means data=customer_data;
@@ -294,13 +294,13 @@ tryCatch({
   analysis_results <- NULL
 })
 ```
-`````
+````
 
 ### 3. Documentation
 
 Document your workflow clearly:
 
-````verbatim
+````{verbatim}
 ```{slc input_data=model_data, output_data="model_results"}
 /* 
 Purpose: Fit logistic regression model for customer churn prediction
@@ -368,6 +368,7 @@ if (length(logs$lst) > 0) {
 The `slcr` package provides a powerful bridge between R's data manipulation capabilities and SLC's statistical procedures. By combining both tools in Quarto documents, you can create comprehensive, reproducible analyses that leverage the strengths of both environments.
 
 Key benefits:
+
 - **Seamless data exchange** between R and SLC
 - **Reproducible workflows** in a single document
 - **Rich visualizations** combining SLC analysis with R graphics

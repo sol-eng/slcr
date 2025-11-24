@@ -54,7 +54,7 @@ jobs:
           git config --local user.name "GitHub Action"
           
           # Switch to main branch and update it
-          git checkout main
+          # git checkout main
           git add DESCRIPTION
           git commit -m "Auto-update version to ${{ steps.get_version.outputs.version }} [skip ci]" || echo "No changes to commit"
           git push origin main

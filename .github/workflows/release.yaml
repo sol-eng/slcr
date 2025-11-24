@@ -1,4 +1,4 @@
-# .github/workflows/release.yaml
+# .github/workflows/release.yaml (simplified)
 on:
   push:
     tags:

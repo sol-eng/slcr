@@ -14,7 +14,7 @@ You can install the development version of slcr from GitHub:
 ```{r}
 #| eval: false
 # install.packages("devtools")
-devtools::install_github("michaelmayer2/slcr")
+devtools::install_github("sol-eng/slcr")
 ```
 
 ## Prerequisites

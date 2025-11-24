@@ -25,7 +25,7 @@ slc_quarto_resources()
 }\if{html}{\out{</div>}}
 \item Installing the Quarto extension (recommended):
 
-\if{html}{\out{<div class="sourceCode bash">}}\preformatted{quarto add michaelmayer2/slc-quarto-ext
+\if{html}{\out{<div class="sourceCode bash">}}\preformatted{quarto add sol-eng/slc-quarto-ext
 }\if{html}{\out{</div>}}
 
 Then in your document:

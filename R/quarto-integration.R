@@ -23,7 +23,7 @@ slc_resource_path <- function(file) {
 #'
 #' 2. Installing the Quarto extension (recommended):
 #'    ```bash
-#'    quarto add michaelmayer2/slc-quarto-ext
+#'    quarto add sol-eng/slc-quarto-ext
 #'    ```
 #'    Then add `filters: - slc` to your document YAML header.
 #'

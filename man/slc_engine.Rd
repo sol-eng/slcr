@@ -39,6 +39,11 @@ data frame to the global environment using \code{assign()}. This is intentional
 behavior to make SLC output data available for subsequent R code chunks in
 Quarto documents.
 }
+\note{
+The assignment to the global environment (using \code{assign()}) is
+intentional and necessary for knitr engine functionality. This allows SLC
+output data to be accessible in subsequent code chunks within Quarto documents.
+}
 \examples{
 \dontrun{
 # This function is typically called automatically by knitr

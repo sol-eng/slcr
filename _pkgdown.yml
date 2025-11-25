@@ -31,6 +31,7 @@ reference:
   - setup_slc_quarto
   - slc_quarto_resources
   - is_quarto_context
+  - install_slc_extension
 
 - title: "Utilities"
   desc: "Helper and utility functions"
@@ -38,6 +39,7 @@ reference:
   - setup_python_env
   - get_slc_log
   - slc_resource_path
+  - has_slc_extension
 
 articles:
 - title: "Getting Started"

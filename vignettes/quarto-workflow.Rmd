@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-The `slcr` package enables seamless integration between R and SLC (Statistical Linear Combinations) within Quarto documents. This vignette demonstrates how to combine R data manipulation with SLC statistical procedures in a single document.
+The `slcr` package enables seamless integration between R and SLC (SAS Language Compiler) within Quarto documents. This vignette demonstrates how to combine R data manipulation with SLC statistical procedures in a single document.
 
 ## Getting Started
 

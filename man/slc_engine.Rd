@@ -10,8 +10,8 @@ slc_engine(options)
 \item{options}{A list of chunk options from knitr, including:
 \describe{
 \item{code}{Character vector containing the SLC code to execute}
-\item{input_data}{Name of R data.frame to make available in SLC (optional)}
-\item{output_data}{Name for capturing SLC output data into R (optional)}
+\item{input_data}{Name(s) of R data.frame(s) to make available in SLC. Can be a single name or comma-separated names (optional)}
+\item{output_data}{Name(s) for capturing SLC output data into R. Can be a single name or comma-separated names (optional)}
 \item{eval}{Whether to evaluate the code (default: TRUE)}
 \item{echo}{Whether to show the code (default: TRUE)}
 \item{include}{Whether to include output (default: TRUE)}
@@ -21,7 +21,7 @@ slc_engine(options)
 A knitr engine output object containing the code and results
 }
 \description{
-Provides support for executineg SLC code blocks in Quarto documents.
+Provides support for executing SLC code blocks in Quarto documents.
 This function is automatically called by knitr when processing SLC code chunks.
 }
 \details{
@@ -34,16 +34,20 @@ This function handles the execution of SLC code within Quarto documents by:
 \item Transferring output data from SLC to R if specified
 }
 
-When \code{output_data} is specified, the function assigns the resulting
-data frame to the global environment using \code{assign()}. This is intentional
-behavior to make SLC output data available for subsequent R code chunks in
-Quarto documents.
+Multiple datasets can be specified using comma-separated names:
+\itemize{
+\item \code{input_data="df1,df2,df3"} - transfers multiple R data.frames to SLC
+\item \code{output_data="result1,result2"} - captures multiple datasets from SLC to R
 }
-\note{
-The assignment to the global environment (using \code{assign()}) is
-intentional and necessary for knitr engine functionality. This allows SLC
-output data to be accessible in subsequent code chunks within Quarto documents.
 }
+\section{Global Environment Assignment}{
+
+When \code{output_data} is specified, this function intentionally assigns
+the resulting dataset(s) to the global environment using \code{assign(..., envir = .GlobalEnv)}.
+This is the expected behavior to make SLC output data available for subsequent
+R code chunks in the same Quarto document.
+}
+
 \examples{
 \dontrun{
 # This function is typically called automatically by knitr
@@ -54,6 +58,15 @@ options <- list(
   code = c("data test;", "  x = 1;", "run;"),
   input_data = "mtcars",
   output_data = "results",
+  eval = TRUE,
+  echo = TRUE
+)
+
+# Multiple datasets example:
+options <- list(
+  code = c("data combined;", "  set df1 df2;", "run;"),
+  input_data = "df1,df2",
+  output_data = "combined,summary",
   eval = TRUE,
   echo = TRUE
 )

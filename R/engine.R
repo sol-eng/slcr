@@ -67,19 +67,12 @@
 #' # The engine would be called like this:
 #' # slc_engine(options)
 #' }
-
-#' Parse comma-separated names from chunk options
-#'
-#' @param names_string A string containing comma-separated names, or NULL
-#' @return A character vector of trimmed names, or character(0) if input is NULL/empty
-#' @keywords internal
-parse_multiple_names <- function(names_string) {
-  if (is.null(names_string) || names_string == "") {
-    return(character(0))
-  }
-  trimws(strsplit(names_string, ",")[[1]])
-}
 slc_engine <- function(options) {
+  # Validate that options is a list
+  if (!is.list(options)) {
+    stop("options must be a list")
+  }
+
   code <- paste(options$code, collapse = "\n")
   output <- character(0)
   connection <- NULL
@@ -145,4 +138,17 @@ slc_engine <- function(options) {
   # segmentation faults. The Python garbage collector will handle cleanup.
 
   knitr::engine_output(options, code, output)
+}
+
+
+#' Parse comma-separated names from chunk options
+#'
+#' @param names_string A string containing comma-separated names, or NULL
+#' @return A character vector of trimmed names, or character(0) if input is NULL/empty
+#' @keywords internal
+parse_multiple_names <- function(names_string) {
+  if (is.null(names_string) || names_string == "") {
+    return(character(0))
+  }
+  trimws(strsplit(names_string, ",")[[1]])
 }

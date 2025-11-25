@@ -1,7 +1,7 @@
 #' SLC Engine for Quarto
 #'
 #' @description
-#' Provides support for executing SLC code blocks in Quarto documents.
+#' Provides support for executineg SLC code blocks in Quarto documents.
 #' This function is automatically called by knitr when processing SLC code chunks.
 #'
 #' @param options A list of chunk options from knitr, including:

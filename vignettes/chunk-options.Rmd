@@ -31,7 +31,7 @@ The `slcr` package supports several chunk options for SLC code blocks in Quarto 
 
 Specifies an R data frame to be made available in the SLC environment:
 
-````verbatim
+````{verbatim}
 ```{slc input_data=my_data}
 proc print data=my_data;
 run;

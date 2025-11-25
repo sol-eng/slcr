@@ -21,7 +21,7 @@ slc_engine(options)
 A knitr engine output object containing the code and results
 }
 \description{
-Provides support for executing SLC code blocks in Quarto documents.
+Provides support for executineg SLC code blocks in Quarto documents.
 This function is automatically called by knitr when processing SLC code chunks.
 }
 \details{

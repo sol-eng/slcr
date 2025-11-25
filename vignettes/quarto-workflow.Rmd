@@ -19,6 +19,56 @@ knitr::opts_chunk$set(
 
 The `slcr` package enables seamless integration between R and SLC (SAS Language Compiler) within Quarto documents. This vignette demonstrates how to combine R data manipulation with SLC statistical procedures in a single document.
 
+## Installing the SLC Quarto Extension
+
+The `slcr` package includes a Quarto extension that provides native support for SLC code blocks in Quarto documents. To use SLC code blocks with syntax highlighting and proper rendering, you need to install this extension.
+
+### Installation
+
+First, install the extension in your Quarto project directory:
+
+````{verbatim}
+```{r install-extension}
+library(slcr)
+
+# Install the SLC Quarto extension in the current directory
+install_slc_extension()
+
+# Or install in a specific project directory
+# install_slc_extension("path/to/your/quarto/project")
+```
+````
+
+This will create an `_extensions/slc/` directory in your project with the necessary extension files.
+
+### Quarto Document Setup
+
+Once the extension is installed, add it to your Quarto document's YAML header:
+
+````{verbatim}
+```
+---
+title: "My SLC Analysis"
+format: html
+filters:
+  - slc
+---
+```
+````
+
+### Alternative: Using the Extension Without Installation
+
+If you prefer not to install the extension locally, you can still use SLC code blocks by registering the `slc` engine directly in your document:
+
+````{verbatim}
+```{r setup-engine}
+library(slcr)
+
+# Register the SLC engine for this document
+knitr::knit_engines$set(slc = slcr::slc_engine)
+```
+````
+
 ## Getting Started
 
 First, load the slcr package and initialize a connection:

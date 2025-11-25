@@ -24,7 +24,7 @@ The `slcr` package enables seamless integration between R and SLC (Statistical L
 First, load the slcr package and initialize a connection:
 
 ````{verbatim}
-```{r init, eval=FALSE}
+```{r init}
 library(slcr)
 
 # Initialize SLC connection
@@ -39,7 +39,7 @@ conn <- slc_init()
 Start by creating or loading data in R:
 
 ````{verbatim}
-```{r create-data, eval=FALSE}
+```{r create-data}
 # Create sample data
 sales_data <- data.frame(
   region = c("North", "South", "East", "West", "North", "South"),
@@ -118,7 +118,7 @@ NOTE: The data set WORK.SUMMARY_STATS has 5 observations and 11 variables.
 The `summary_stats` dataset is now available in R:
 
 ````{verbatim}
-```{r analyze-results, eval=FALSE}
+```{r analyze-results}
 # Examine the summary statistics
 str(summary_stats)
 head(summary_stats)
@@ -148,7 +148,7 @@ ggplot(regional_summary, aes(x = region, y = avg_profit)) +
 You can pass data back and forth multiple times:
 
 ````{verbatim}
-```{r customer-data, eval=FALSE}
+```{r customer-data}
 # Start with R data processing
 customer_data <- data.frame(
   customer_id = 1:100,
@@ -185,7 +185,7 @@ run;
 ````
 
 ````{verbatim}
-```{r customer-analysis, eval=FALSE}
+```{r customer-analysis}
 # Continue analysis in R
 library(dplyr)
 
@@ -214,7 +214,7 @@ customer_final %>%
 You can also work with external data files:
 
 ````{verbatim}
-```{r external-data, eval=FALSE}
+```{r external-data}
 # Read data from CSV
 if (file.exists("data/survey_data.csv")) {
   survey_data <- read.csv("data/survey_data.csv")
@@ -260,7 +260,7 @@ run;
 Always prepare and validate your data in R before sending to SLC:
 
 ````{verbatim}
-```{r data-prep, eval=FALSE}
+```{r data-prep}
 # Clean and validate data
 clean_data <- raw_data %>%
   filter(!is.na(key_variable)) %>%
@@ -280,7 +280,7 @@ summary(clean_data)
 Use R's error handling when working with SLC results:
 
 ````{verbatim}
-```{r error-handling, eval=FALSE}
+```{r error-handling}
 # Safely read SLC output
 tryCatch({
   analysis_results <- read_slc_data("analysis_output", conn)
@@ -320,7 +320,7 @@ run;
 Set up your environment for reproducibility:
 
 ````{verbatim}
-```{r reproducibility, eval=FALSE}
+```{r reproducibility}
 # Set seed for reproducible results
 set.seed(123)
 
@@ -343,7 +343,7 @@ save.image("analysis_workspace.RData")
 ### Debugging Tips
 
 ````{verbatim}
-```{r debugging, eval=FALSE}
+```{r debugging}
 # Check data before sending to SLC
 str(my_data)
 summary(my_data)

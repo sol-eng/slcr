@@ -7,6 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+````{verbatim}
 ```{r setup, include=FALSE}
 # Create example data for documentation purposes
 my_data <- data.frame(x = 1:3, y = letters[1:3])
@@ -20,6 +21,7 @@ knitr::opts_hooks$set(engine = function(options) {
   options
 })
 ```
+````
 
 ## Chunk Options for SLC Code Blocks
 
@@ -81,6 +83,7 @@ NOTE: DATA statement used (Total process time):
 
 After which `want` is available as dataframe in R:
 
+````{verbatim}
 ```{r eval=FALSE}
 # The 'want' dataset is now available in R
 str(want)
@@ -94,6 +97,7 @@ head(want)
 # 1       1       2       3
 # 2       4       5       6
 ```
+````
 
 Please note that the output_data name needs to be escaped with double quotes. 
 
@@ -101,7 +105,7 @@ Please note that the output_data name needs to be escaped with double quotes.
 
 SLC chunks also support standard Quarto chunk options:
 
-````verbatim
+````{verbatim}
 ```{slc echo=TRUE, eval=TRUE, include=TRUE}
 proc means data=sashelp.class;
   var age height weight;
@@ -110,6 +114,7 @@ run;
 ````
 
 **Output:**
+
 ```
                             The SLC System
 
@@ -138,7 +143,7 @@ Available standard chunk options:
 
 You can combine multiple chunk options for more complex workflows:
 
-````verbatim
+````{verbatim}
 ```{slc input_data=mtcars, output_data="car_summary", echo=TRUE}
 proc means data=mtcars noprint;
   var mpg hp;
@@ -148,6 +153,7 @@ run;
 ````
 
 **Output:**
+
 ```
 NOTE: There were 32 observations read from the data set WORK.MTCARS.
 NOTE: The data set WORK.CAR_SUMMARY has 1 observations and 4 variables.

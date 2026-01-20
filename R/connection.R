@@ -1,136 +1,155 @@
-# R/connection.R
-#' Initialize SLC Connection
+#' Base Connection Class
 #'
-#' @description
-#' Creates a connection to Altair SLC using the Python SDK.
-#'
-#' @return An SLC connection object
+#' @description Abstract base class for connections
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Initialize a new SLC connection
-#' conn <- slc_init()
-#'
-#' # Check if connection is working
-#' class(conn)
-#'
-#' # The connection can be reused for multiple operations
-#' write_slc_data(mtcars, "cars", conn)
-#' }
-#'
-#' # Example without running SLC (for testing)
-#' if (FALSE) {
-#'   conn <- slc_init()
-#'   print("SLC connection established")
-#' }
-slc_init <- function() {
-  ensure_python_env()
-  slc <- reticulate::import("slc.slc")
-  # Return the module instead of trying to call init()
+Connection <- R6::R6Class(
+  "Connection",
+  public = list(
+    #' @description Send data through connection
+    #' @param buff CDR buffer
+    send = function(buff) {
+      stop("send() must be implemented by subclass")
+    },
 
-  connection <- slc$Slc()
+    #' @description Receive data through connection
+    #' @param buff CDR buffer
+    recv = function(buff) {
+      stop("recv() must be implemented by subclass")
+    }
+  )
+)
 
-  return(connection)
-}
-
-#' Submit SLC Code
+#' Named Pipe Connection
 #'
-#' @param code Character string containing SLC code
-#' @param connection SLC connection object. If NULL (default), a new connection will be created automatically.
-#'
-#' @return Results from SLC execution
+#' @description Connection using named pipes for IPC with SLC process
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Initialize connection
-#' conn <- slc_init()
-#'
-#' # Submit basic SLC code
-#' slc_submit("data test; x = 1; y = 2; run;", conn)
-#'
-#' # Submit code with automatic connection
-#' slc_submit("proc print data=sashelp.class; run;")
-#'
-#' # Read and submit the SAS code from file (sas_file)
-#' sas_code <- readLines(sas_file)
-#'
-#' slc_submit(paste(sas_code, collapse = "\n"), conn)
-#' }
-slc_submit <- function(code, connection = NULL) {
-  ensure_python_env()
+NamedPipeConnection <- R6::R6Class(
+  "NamedPipeConnection",
+  inherit = Connection,
+  private = list(
+    input_pipe = NULL,
+    output_pipe = NULL,
+    input_con = NULL,
+    output_con = NULL,
 
-  if (is.null(connection)) {
-    message("No connection found, triggering a new session")
-    connection <- slc_init()
-  }
+    # Finalizer
+    finalize = function() {
+      if (!is.null(private$input_con)) {
+        try(close(private$input_con), silent = TRUE)
+      }
+      if (!is.null(private$output_con)) {
+        try(close(private$output_con), silent = TRUE)
+      }
+    }
+  ),
 
-  connection$submit(text = code)
+  public = list(
+    #' @description Create named pipe connection
+    #' @param input_pipe_name Path to input pipe
+    #' @param output_pipe_name Path to output pipe
+    initialize = function(input_pipe_name, output_pipe_name) {
+      # Open pipes in the same order as the Python implementation
+      # Output pipe first, then input pipe
+      # These are blocking calls until the other end opens them
+      private$output_pipe <- output_pipe_name
+      private$input_pipe <- input_pipe_name
 
-  return(connection)
-}
+      # Open for binary I/O
+      private$output_con <- file(output_pipe_name, open = "wb")
 
-#' Get SLC Log Contents
+      private$input_con <- file(input_pipe_name, open = "rb")
+    },
+
+    #' @description Send data through output pipe
+    #' @param buff CDR buffer
+    send = function(buff) {
+      data <- buff$buffer()
+      if (length(data) > 0) {
+        writeBin(data, private$output_con)
+        flush(private$output_con)
+      }
+      invisible(self)
+    },
+
+    #' @description Receive data through input pipe
+    #' @param buff CDR buffer
+    recv = function(buff) {
+      # Read in a loop to handle partial reads, like the Python implementation
+      # We need to be careful with buffering - R's readBin can block differently
+      # than Python's unbuffered I/O
+      while (buff$remaining() > 0) {
+        remaining <- buff$remaining()
+
+        # Try to read data - use a smaller chunk size to avoid blocking issues
+        # Read one byte at a time if we're having issues, otherwise read in chunks
+        chunk_size <- min(remaining, 8192) # Read in 8KB chunks or less
+        data <- readBin(private$input_con, what = "raw", n = chunk_size)
+
+        if (length(data) == 0) {
+          # No data available - this shouldn't happen in blocking mode
+          stop("Failed to read any bytes from pipe (connection may be closed)")
+        }
+
+        # Copy data into buffer (write_byte advances position automatically)
+        for (i in seq_along(data)) {
+          buff$write_byte(data[i])
+        }
+      }
+      invisible(self)
+    }
+  )
+)
+
+#' Process Connection
 #'
-#' @param connection SLC connection object. If NULL (default), a new connection will be created automatically.
-#' @param type Character string specifying log type: "all", "log", or "error"
-#'
-#' @return Log contents as character vector or list
+#' @description Connection using stdin/stdout of a subprocess
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Initialize connection and run some code
-#' conn <- slc_init()
-#' slc_submit("data test; x = 1; run;", conn)
-#'
-#' # Get all log output
-#' logs <- get_slc_log(conn, "all")
-#' str(logs)
-#'
-#' # Get only the log portion
-#' log_only <- get_slc_log(conn, "log")
-#' cat(log_only, sep = "\n")
-#'
-#' # Get only error/listing output
-#' errors <- get_slc_log(conn, "error")
-#'
-#' # Using automatic connection
-#' slc_submit("proc print data=sashelp.class; run;")
-#' recent_logs <- get_slc_log(type = "all")
-#' }
-#'
-#' # Example of log types
-#' if (FALSE) {
-#'   conn <- slc_init()
-#'
-#'   # Run code that generates log output
-#'   slc_submit("data example; x = 1; y = x * 2; run;", conn)
-#'
-#'   # Different ways to access logs
-#'   all_output <- get_slc_log(conn, "all")      # Both log and listing
-#'   log_output <- get_slc_log(conn, "log")      # Just the log
-#'   lst_output <- get_slc_log(conn, "error")    # Just the listing
-#' }
-get_slc_log <- function(connection = NULL, type = "all") {
-  ensure_python_env()
+ProcessConnection <- R6::R6Class(
+  "ProcessConnection",
+  inherit = Connection,
+  private = list(
+    process = NULL
+  ),
 
-  if (is.null(connection)) {
-    connection <- slc_init()
-  }
+  public = list(
+    #' @description Create process connection
+    #' @param process A processx process object
+    initialize = function(process) {
+      private$process <- process
+    },
 
-  type <- match.arg(type, c("all", "log", "error"))
+    #' @description Send data to process stdin
+    #' @param buff CDR buffer
+    send = function(buff) {
+      data <- buff$buffer()
+      if (length(data) > 0) {
+        private$process$write_input(data)
+      }
+      invisible(self)
+    },
 
-  # Convert Python generators to R vectors
-  if (type == "all") {
-    list(
-      log = reticulate::iterate(connection$getLog(), simplify = TRUE),
-      lst = reticulate::iterate(connection$getListingOutput(), simplify = TRUE)
-    )
-  } else if (type == "log") {
-    reticulate::iterate(connection$getLog(), simplify = TRUE)
-  } else {
-    reticulate::iterate(connection$getListingOutput(), simplify = TRUE)
-  }
-}
+    #' @description Receive data from process stdout
+    #' @param buff CDR buffer
+    recv = function(buff) {
+      # Read in a loop to handle partial reads, like the Python implementation
+      while (buff$remaining() > 0) {
+        remaining <- buff$remaining()
+        # Read whatever is available, up to remaining bytes
+        data <- private$process$read_output_bytes(n = remaining)
+
+        if (length(data) == 0) {
+          # No data available - this shouldn't happen in blocking mode
+          stop(
+            "Failed to read any bytes from process (connection may be closed)"
+          )
+        }
+
+        # Copy data into buffer (write_byte advances position automatically)
+        for (i in seq_along(data)) {
+          buff$write_byte(data[i])
+        }
+      }
+      invisible(self)
+    }
+  )
+)

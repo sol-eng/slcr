@@ -1,6 +1,73 @@
-#' SLC Connection Class
+#' Altair SLC Connection Interface
 #'
-#' @description Main class for connecting to and interacting with Altair SLC
+#' @description
+#' The `Slc` class provides the main interface for connecting to and interacting
+#' with Altair SLC (Statistical Language Compiler). It manages the SLC process,
+#' handles communication via the ORB protocol, and provides high-level methods
+#' for submitting SAS code and managing data.
+#'
+#' @details
+#' This class handles:
+#' \itemize{
+#'   \item Starting and managing the SLC process (`wpslinks`)
+#'   \item Establishing communication via named pipes
+#'   \item Creating and managing SLC sessions
+#'   \item Submitting SAS code for execution
+#'   \item Accessing logs, listings, and macro variables
+#'   \item Managing SAS libraries and datasets
+#' }
+#'
+#' The connection uses the ORB (Object Request Broker) protocol to communicate
+#' with SLC through named pipes (FIFOs on Unix/Linux systems).
+#'
+#' @section Environment Requirements:
+#' The SLC binary must be available. The class looks for it in:
+#' \enumerate{
+#'   \item `$WPSHOME/bin/wpslinks` (if WPSHOME environment variable is set)
+#'   \item `$WPSHOME/MacOS/wpslinks` (on macOS)
+#'   \item Default installation paths like `/opt/altair/slc/*/bin`
+#' }
+#'
+#' Set the WPSHOME environment variable if SLC is installed in a non-standard location:
+#' \code{Sys.setenv(WPSHOME = "/path/to/slc/installation")}
+#'
+#' @examples
+#' \dontrun{
+#' # Basic connection and code submission
+#' slc <- Slc$new()
+#'
+#' # Submit SAS code
+#' slc$submit('
+#'   data test;
+#'     x = 1;
+#'     y = 2;
+#'   run;
+#' ')
+#'
+#' # Get the log
+#' log_output <- slc$get_log()
+#' cat(log_output)
+#'
+#' # Get listing output (from PROC PRINT, etc.)
+#' slc$submit('proc print data=test; run;')
+#' listing <- slc$get_listing_output()
+#'
+#' # Work with libraries and datasets
+#' work_lib <- slc$get_library("WORK")
+#' datasets <- work_lib$get_dataset_names()
+#'
+#' # Convert between R and SAS data
+#' work_lib$create_dataset_from_dataframe(mtcars, "cars")
+#' cars_df <- work_lib$get_dataset_as_dataframe("cars")
+#'
+#' # Macro variables
+#' slc$submit('%let myvar = hello world;')
+#' value <- slc$get_macro_variable("myvar")
+#'
+#' # Clean shutdown
+#' slc$shutdown()
+#' }
+#'
 #' @export
 Slc <- R6::R6Class(
   "Slc",

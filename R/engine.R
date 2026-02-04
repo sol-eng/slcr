@@ -85,8 +85,7 @@ slc_engine <- function(options) {
   tryCatch(
     {
       # Initialize SLC if needed
-      ensure_python_env()
-      connection <- slc_init()
+      connection <- Slc$new
 
       # Handle input data if specified
       input_names <- parse_multiple_names(options$input_data)
@@ -104,14 +103,15 @@ slc_engine <- function(options) {
           if (!is.data.frame(input_data)) {
             stop("input_data '", input_name, "' must refer to a data.frame")
           }
-          write_slc_data(input_data, input_name, connection)
+          work_lib <- connection$get_library("WORK")
+          work_lib$create_dataset_from_dataframe(input_data)
         }
       }
 
       # Execute the code if present
       if (nchar(code) > 0) {
-        result <- slc_submit(code, connection)
-        log_output <- get_slc_log(connection)
+        result <- connection$submit(code)
+        log_output <- connection$get_log()
         if (is.list(log_output) && "log" %in% names(log_output)) {
           output <- log_output$log
         } else {
@@ -123,7 +123,7 @@ slc_engine <- function(options) {
       output_names <- parse_multiple_names(options$output_data)
       if (length(output_names) > 0) {
         for (output_name in output_names) {
-          output_df <- read_slc_data(output_name, connection)
+          output_df <- work_lib$get_dataset_as_dataframe(output_name)
           # Intentional assignment to global environment for Quarto workflow
           assign(output_name, output_df, envir = .GlobalEnv)
         }

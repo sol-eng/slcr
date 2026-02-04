@@ -21,7 +21,7 @@
 #' }
 install_slc_extension <- function(dest_dir = ".", force = FALSE) {
   # Get the extension path from the package
-  ext_source <- system.file("quarto-ext", "slc", package = "slcr")
+  ext_source <- system.file("quarto-ext", "slcr", package = "slcR")
 
   if (ext_source == "") {
     stop(
@@ -30,7 +30,7 @@ install_slc_extension <- function(dest_dir = ".", force = FALSE) {
   }
 
   # Create destination path
-  dest_path <- file.path(dest_dir, "_extensions", "slc")
+  dest_path <- file.path(dest_dir, "_extensions", "slcr")
 
   # Check if extension already exists
   if (dir.exists(dest_path) && !force) {
@@ -60,7 +60,7 @@ install_slc_extension <- function(dest_dir = ".", force = FALSE) {
   message("Extension location: ", dest_path)
   message("\nTo use in your Quarto document, add to YAML header:")
   message("filters:")
-  message("  - slc")
+  message("  - slcr")
 
   invisible(dest_path)
 }
@@ -83,6 +83,6 @@ install_slc_extension <- function(dest_dir = ".", force = FALSE) {
 #' # Check in specific directory
 #' has_slc_extension("path/to/project")
 has_slc_extension <- function(dir = ".") {
-  ext_path <- file.path(dir, "_extensions", "slc", "_extension.yml")
+  ext_path <- file.path(dir, "_extensions", "slcr", "_extension.yml")
   file.exists(ext_path)
 }

@@ -1,6 +1,6 @@
 #' Base Exception Classes for ORB
 #'
-#' @export
+#' @noRd
 OrbException <- R6::R6Class(
   "OrbException",
   public = list(
@@ -19,7 +19,7 @@ OrbException <- R6::R6Class(
 
 #' System Exception
 #'
-#' @export
+#' @noRd
 SystemException <- R6::R6Class(
   "SystemException",
   inherit = OrbException,
@@ -32,7 +32,7 @@ SystemException <- R6::R6Class(
 
 #' Application Exception
 #'
-#' @export
+#' @noRd
 ApplicationException <- R6::R6Class(
   "ApplicationException",
   inherit = OrbException,
@@ -50,7 +50,7 @@ ApplicationException <- R6::R6Class(
 
 #' Unknown Exception
 #'
-#' @export
+#' @noRd
 UnknownException <- R6::R6Class(
   "UnknownException",
   inherit = SystemException,
@@ -63,7 +63,7 @@ UnknownException <- R6::R6Class(
 
 #' Bad Operation Exception
 #'
-#' @export
+#' @noRd
 BadOperationException <- R6::R6Class(
   "BadOperationException",
   inherit = SystemException,
@@ -76,7 +76,7 @@ BadOperationException <- R6::R6Class(
 
 #' Already Registered Exception
 #'
-#' @export
+#' @noRd
 AlreadyRegisteredException <- R6::R6Class(
   "AlreadyRegisteredException",
   inherit = SystemException,
@@ -89,7 +89,7 @@ AlreadyRegisteredException <- R6::R6Class(
 
 #' Object Not Exist Exception
 #'
-#' @export
+#' @noRd
 ObjectNotExistException <- R6::R6Class(
   "ObjectNotExistException",
   inherit = SystemException,
@@ -102,7 +102,7 @@ ObjectNotExistException <- R6::R6Class(
 
 #' Servant Not Active Exception
 #'
-#' @export
+#' @noRd
 ServantNotActiveException <- R6::R6Class(
   "ServantNotActiveException",
   inherit = SystemException,
@@ -115,20 +115,47 @@ ServantNotActiveException <- R6::R6Class(
 
 #' User Exception
 #'
-#' @export
+#' @noRd
 UserException <- R6::R6Class("UserException", inherit = OrbException)
 
 #' SLC Error
 #'
-#' @export
-SlcError <- R6::R6Class("SlcError", inherit = OrbException)
+#' @noRd
+SlcError <- R6::R6Class(
+  "SlcError",
+  inherit = OrbException,
+  public = list(
+    reason = NULL,
+
+    initialize = function(reason = "An error has occurred.") {
+      self$reason <- reason
+      super$initialize(reason)
+    }
+  )
+)
 
 #' Internal Error
 #'
-#' @export
-InternalError <- R6::R6Class("InternalError", inherit = SlcError)
+#' @noRd
+InternalError <- R6::R6Class(
+  "InternalError",
+  inherit = SlcError,
+  public = list(
+    initialize = function(reason = "An internal error has occurred.") {
+      super$initialize(reason)
+    }
+  )
+)
 
 #' User Error
 #'
-#' @export
-UserError <- R6::R6Class("UserError", inherit = SlcError)
+#' @noRd
+UserError <- R6::R6Class(
+  "UserError",
+  inherit = SlcError,
+  public = list(
+    initialize = function(reason = "An error has occurred.") {
+      super$initialize(reason)
+    }
+  )
+)

@@ -62,10 +62,10 @@ If you prefer not to install the extension locally, you can still use SLC code b
 
 ````{verbatim}
 ```{r setup-engine}
-library(slcr)
+library(slcR)
 
 # Register the SLC engine for this document
-knitr::knit_engines$set(slc = slcr::slc_engine)
+knitr::knit_engines$set(slc = slcrR:slc_engine)
 ```
 ````
 
@@ -75,10 +75,10 @@ First, load the slcr package and initialize a connection:
 
 ````{verbatim}
 ```{r init}
-library(slcr)
+library(slcR)
 
 # Initialize SLC connection
-conn <- slc_init()
+conn <- Slc$new()
 ```
 ````
 
@@ -333,7 +333,7 @@ Use R's error handling when working with SLC results:
 ```{r error-handling}
 # Safely read SLC output
 tryCatch({
-  analysis_results <- read_slc_data("analysis_output", conn)
+  analysis_results <- conn$get_log()
   
   if (nrow(analysis_results) == 0) {
     warning("No results returned from SLC analysis")
@@ -402,13 +402,13 @@ summary(my_data)
 if (exists("conn")) {
   message("SLC connection active")
 } else {
-  conn <- slc_init()
+  conn <- Slc$new()
 }
 
 # Check SLC logs for errors
-logs <- get_slc_log(conn, "all")
-if (length(logs$lst) > 0) {
-  cat("SLC Output:\n", paste(logs$lst, collapse = "\n"))
+logs <- conn$get_log()
+if (length(logs) > 0) {
+  cat("SLC Output:\n", paste(logs, collapse = "\n"))
 }
 ```
 ````

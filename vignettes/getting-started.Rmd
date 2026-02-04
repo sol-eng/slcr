@@ -1,0 +1,174 @@
+---
+title: "Getting Started with slcr"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with slcr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(slcr)
+```
+
+# Introduction
+
+The `slcr` package provides an R interface to Altair SLC (Statistical Language Compiler), allowing you to execute SAS code and work with SAS datasets directly from R.
+
+## Basic Usage
+
+### Creating an SLC Connection
+
+```{r eval=FALSE}
+# Create a new SLC connection
+slc <- Slc$new()
+```
+
+### Working with Libraries
+
+```{r eval=FALSE}
+# Get the WORK library
+work_lib <- slc$get_library("WORK")
+
+# Create a new library
+my_lib <- slc$create_library("MYLIB", "/path/to/data", "WPD")
+
+# List all libraries
+library_names <- slc$get_library_names()
+print(library_names)
+```
+
+### Executing SAS Code
+
+```{r eval=FALSE}
+# Submit SAS code directly
+slc$submit("
+  data test;
+    x = 1;
+    y = 2;
+    z = x + y;
+  run;
+")
+
+# Submit code from a file
+slc$submit_file("my_sas_program.sas")
+```
+
+### Working with Datasets
+
+```{r eval=FALSE}
+# Open a dataset
+dataset <- work_lib$open_dataset("test", "read")
+
+# Get dataset information
+record_count <- dataset$get_count()
+field_info <- dataset$get_fields()
+
+# Convert to R data frame
+df <- dataset$to_data_frame()
+print(df)
+
+# Close the dataset
+dataset$close()
+```
+
+### Creating Datasets from R Data Frames
+
+```{r eval=FALSE}
+# Create a sample data frame
+df <- data.frame(
+  name = c("Alice", "Bob", "Charlie"),
+  age = c(25, 30, 35),
+  salary = c(50000, 60000, 70000)
+)
+
+# Create SLC dataset from R data frame
+dataset <- work_lib$create_dataset_from_dataframe("employees", df)
+
+# Verify the dataset was created
+datasets <- work_lib$get_datasets()
+print(datasets)
+```
+
+### Macro Variables
+
+```{r eval=FALSE}
+# Set macro variables
+slc$set_macro_variable("myvar", "Hello World")
+slc$set_macro_variable("number", 42)
+
+# Get macro variables
+value <- slc$get_macro_variable("myvar")
+print(value)
+```
+
+### Getting Output
+
+```{r eval=FALSE}
+# Get log output
+log_lines <- slc$get_log()
+for (line in log_lines) {
+  cat(line, "\n")
+}
+
+# Get listing output
+listing_lines <- slc$get_listing_output()
+for (line in listing_lines) {
+  cat(line, "\n")
+}
+
+# Clear listing output
+slc$clear_listing_output()
+```
+
+## Cleanup
+
+Always remember to shut down the SLC connection when you're done:
+
+```{r eval=FALSE}
+# Shutdown the connection
+slc$shutdown()
+```
+
+## Error Handling
+
+The package provides custom error classes for better error handling:
+
+```{r eval=FALSE}
+tryCatch({
+  # Some SLC operation that might fail
+  slc$submit("invalid sas code;")
+}, UserError = function(e) {
+  cat("User error:", e$reason, "\n")
+}, InternalError = function(e) {
+  cat("Internal error:", e$reason, "\n")
+})
+```
+
+## Advanced Features
+
+### Using Arrow/Parquet for Faster Data Transfer
+
+If you have the `arrow` package installed, `slcr` will automatically use Parquet format for faster data transfer between R and SLC:
+
+```{r eval=FALSE}
+# Install arrow for better performance
+# install.packages("arrow")
+
+# Data transfer will automatically use Parquet if available
+large_df <- data.frame(
+  x = rnorm(100000),
+  y = rnorm(100000)
+)
+
+dataset <- work_lib$create_dataset_from_dataframe("large_data", large_df)
+```
+
+This concludes the basic introduction to `slcr`. For more advanced usage and examples, please refer to the package documentation.

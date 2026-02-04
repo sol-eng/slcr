@@ -1,7 +1,8 @@
 #' Message Header for ORB Protocol
 #'
-#' @export
-MessageHeader <- R6::R6Class("MessageHeader",
+#' @noRd
+MessageHeader <- R6::R6Class(
+  "MessageHeader",
   public = list(
     eye_catcher = 0L,
     protocol_major = 0L,
@@ -9,9 +10,7 @@ MessageHeader <- R6::R6Class("MessageHeader",
     message_type = 0L,
     flags = 0L,
     message_length = 0L,
-    
-    #' @description Read header from buffer
-    #' @param buff CDR buffer
+
     read = function(buff) {
       self$eye_catcher <- buff$read_int()
       self$protocol_major <- buff$read_byte()
@@ -21,9 +20,7 @@ MessageHeader <- R6::R6Class("MessageHeader",
       self$message_length <- buff$read_int()
       invisible(self)
     },
-    
-    #' @description Write header to buffer
-    #' @param buff CDR buffer
+
     write = function(buff) {
       buff$write_int(self$eye_catcher)
       buff$write_byte(self$protocol_major)
@@ -49,22 +46,19 @@ MessageHeader$MSGTYPE_VALIDATE <- 5L
 
 #' Reply Header for ORB Protocol
 #'
-#' @export
-ReplyHeader <- R6::R6Class("ReplyHeader",
+#' @noRd
+ReplyHeader <- R6::R6Class(
+  "ReplyHeader",
   public = list(
     request_id = 0L,
     reply_status = 0L,
-    
-    #' @description Read reply header from buffer
-    #' @param buff CDR buffer
+
     read = function(buff) {
       self$request_id <- buff$read_int()
       self$reply_status <- buff$read_byte()
       invisible(self)
     },
-    
-    #' @description Write reply header to buffer
-    #' @param buff CDR buffer
+
     write = function(buff) {
       buff$write_int(self$request_id)
       buff$write_byte(self$reply_status)
@@ -77,7 +71,7 @@ ReplyHeader$SIZE <- 5L
 
 #' Reply Status Constants
 #'
-#' @export
+#' @noRd
 ReplyStatus <- list(
   NO_EXCEPTION = 0L,
   USER_EXCEPTION = 1L,
@@ -86,17 +80,16 @@ ReplyStatus <- list(
 
 #' Request Header for ORB Protocol
 #'
-#' @export
-RequestHeader <- R6::R6Class("RequestHeader",
+#' @noRd
+RequestHeader <- R6::R6Class(
+  "RequestHeader",
   public = list(
     request_id = 0L,
     target_object = "",
     future = "",
     operation = "",
     flags = 0L,
-    
-    #' @description Read request header from buffer
-    #' @param buff CDR buffer
+
     read = function(buff) {
       self$request_id <- buff$read_int()
       self$target_object <- buff$read_string()
@@ -105,9 +98,7 @@ RequestHeader <- R6::R6Class("RequestHeader",
       self$flags <- buff$read_byte()
       invisible(self)
     },
-    
-    #' @description Write request header to buffer
-    #' @param buff CDR buffer
+
     write = function(buff) {
       buff$write_int(self$request_id)
       buff$write_string(self$target_object)

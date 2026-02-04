@@ -1,7 +1,7 @@
 #' Base Connection Class
 #'
 #' @description Abstract base class for connections
-#' @export
+#' @noRd
 Connection <- R6::R6Class(
   "Connection",
   public = list(
@@ -22,7 +22,7 @@ Connection <- R6::R6Class(
 #' Named Pipe Connection
 #'
 #' @description Connection using named pipes for IPC with SLC process
-#' @export
+#' @noRd
 NamedPipeConnection <- R6::R6Class(
   "NamedPipeConnection",
   inherit = Connection,
@@ -50,14 +50,16 @@ NamedPipeConnection <- R6::R6Class(
     initialize = function(input_pipe_name, output_pipe_name) {
       # Open pipes in the same order as the Python implementation
       # Output pipe first, then input pipe
-      # These are blocking calls until the other end opens them
+      # Use r+b mode which opens for both read/write and doesn't block
       private$output_pipe <- output_pipe_name
       private$input_pipe <- input_pipe_name
 
-      # Open for binary I/O
-      private$output_con <- file(output_pipe_name, open = "wb")
+      # Open for binary I/O in non-blocking mode
+      # r+b opens for read/write which avoids blocking on FIFO open
+      # Explicitly set raw=TRUE to suppress warnings about FIFOs
+      private$output_con <- file(output_pipe_name, open = "r+b", raw = TRUE)
 
-      private$input_con <- file(input_pipe_name, open = "rb")
+      private$input_con <- file(input_pipe_name, open = "r+b", raw = TRUE)
     },
 
     #' @description Send data through output pipe
@@ -103,7 +105,7 @@ NamedPipeConnection <- R6::R6Class(
 #' Process Connection
 #'
 #' @description Connection using stdin/stdout of a subprocess
-#' @export
+#' @noRd
 ProcessConnection <- R6::R6Class(
   "ProcessConnection",
   inherit = Connection,

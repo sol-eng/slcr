@@ -158,7 +158,7 @@ Library <- R6::R6Class(
       temp_file <- tempfile(fileext = paste0(".", format))
 
       if (format == "csv") {
-        readr::write_csv(df, temp_file)
+        readr::write_csv(df, temp_file, na = "")
       } else if (format == "parquet") {
         if (!requireNamespace("arrow", quietly = TRUE)) {
           stop("arrow package required for parquet format")

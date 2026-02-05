@@ -130,12 +130,9 @@ slc_engine <- function(options) {
       }
     },
     error = function(e) {
-      output <<- paste("Error:", e$message)
+      stop(e$message)
     }
   )
-
-  # Note: We don't explicitly clean up the connection here as it may cause
-  # segmentation faults. The Python garbage collector will handle cleanup.
 
   knitr::engine_output(options, code, output)
 }

@@ -104,7 +104,7 @@ slc_engine <- function(options) {
           if (!is.data.frame(input_data)) {
             stop("input_data '", input_name, "' must refer to a data.frame")
           }
-          work_lib$create_dataset_from_dataframe(input_data)
+          work_lib$create_dataset_from_dataframe(input_data, name = input_name)
         }
       }
 

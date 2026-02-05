@@ -46,6 +46,7 @@ reference:
   - install_slc_extension
   - has_slc_extension
   - slc_resource_path
+  - is_quarto_context
 
 - title: "Utilities"
   desc: "Helper and utility functions"
@@ -57,6 +58,7 @@ articles:
 - title: "Getting Started"
   navbar: ~
   contents:
+  - getting-started
   - quarto-workflow
 
 navbar:

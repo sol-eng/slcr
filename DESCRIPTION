@@ -1,6 +1,6 @@
 Package: slcR
 Title: R Interface to Altair SLC 
-Version: 0.1.0
+Version: 0.2.0
 Author: Michael Mayer [aut, cre]
 Maintainer: Michael Mayer <michael.mayer@posit.co>
 Authors@R: 
@@ -20,6 +20,7 @@ Imports:
     knitr
 Suggests: 
     testthat (>= 3.0.0)
+    arrow
 Config/testthat/edition: 3
 Config/quarto/extension: slcr
 URL: https://github.com/sol-eng/slcR, https://sol-eng.github.io/slcR/

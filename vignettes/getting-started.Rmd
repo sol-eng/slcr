@@ -49,13 +49,15 @@ print(library_names)
 
 ```{r eval=FALSE}
 # Submit SAS code directly
-slc$submit("
+slc$submit(
+  "
   data test;
     x = 1;
     y = 2;
     z = x + y;
   run;
-")
+"
+)
 
 # Submit code from a file
 slc$submit_file("my_sas_program.sas")
@@ -96,6 +98,8 @@ dataset <- work_lib$create_dataset_from_dataframe("employees", df)
 datasets <- work_lib$get_datasets()
 print(datasets)
 ```
+
+Note: if the `arrow` package is available, the dataset conversion is done via parquet files instead of csv files. 
 
 ### Macro Variables
 
@@ -142,14 +146,18 @@ slc$shutdown()
 The package provides custom error classes for better error handling:
 
 ```{r eval=FALSE}
-tryCatch({
-  # Some SLC operation that might fail
-  slc$submit("invalid sas code;")
-}, UserError = function(e) {
-  cat("User error:", e$reason, "\n")
-}, InternalError = function(e) {
-  cat("Internal error:", e$reason, "\n")
-})
+tryCatch(
+  {
+    # Some SLC operation that might fail
+    slc$submit("invalid sas code;")
+  },
+  UserError = function(e) {
+    cat("User error:", e$reason, "\n")
+  },
+  InternalError = function(e) {
+    cat("Internal error:", e$reason, "\n")
+  }
+)
 ```
 
 ## Advanced Features

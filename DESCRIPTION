@@ -19,7 +19,7 @@ Imports:
     tibble,
     knitr
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
     arrow
 Config/testthat/edition: 3
 Config/quarto/extension: slcr

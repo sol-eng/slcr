@@ -34,7 +34,7 @@
 #'
 #' @section Global Environment Assignment:
 #' When \code{output_data} is specified, this function intentionally assigns
-#' the resulting dataset(s) to the global environment using \code{assign(..., envir = .GlobalEnv)}.
+#' the resulting dataset(s) to the global environment using \code{assign(..., envir = knitr::knit_global())}.
 #' This is the expected behavior to make SLC output data available for subsequent
 #' R code chunks in the same Quarto document.
 #'
@@ -85,14 +85,14 @@ slc_engine <- function(options) {
   tryCatch(
     {
       # Initialize SLC if needed
-      ensure_python_env()
-      connection <- slc_init()
+      connection <- Slc$new()
+      work_lib <- connection$get_library("WORK")
 
       # Handle input data if specified
       input_names <- parse_multiple_names(options$input_data)
       if (length(input_names) > 0) {
         for (input_name in input_names) {
-          if (!exists(input_name, envir = .GlobalEnv)) {
+          if (!exists(input_name, envir = knitr::knit_global())) {
             stop(
               "Object '",
               input_name,
@@ -100,18 +100,18 @@ slc_engine <- function(options) {
             )
           }
 
-          input_data <- get(input_name, envir = .GlobalEnv)
+          input_data <- get(input_name, envir = knitr::knit_global())
           if (!is.data.frame(input_data)) {
             stop("input_data '", input_name, "' must refer to a data.frame")
           }
-          write_slc_data(input_data, input_name, connection)
+          work_lib$create_dataset_from_dataframe(input_data, name = input_name)
         }
       }
 
       # Execute the code if present
       if (nchar(code) > 0) {
-        result <- slc_submit(code, connection)
-        log_output <- get_slc_log(connection)
+        result <- connection$submit(code)
+        log_output <- connection$get_log()
         if (is.list(log_output) && "log" %in% names(log_output)) {
           output <- log_output$log
         } else {
@@ -123,19 +123,16 @@ slc_engine <- function(options) {
       output_names <- parse_multiple_names(options$output_data)
       if (length(output_names) > 0) {
         for (output_name in output_names) {
-          output_df <- read_slc_data(output_name, connection)
+          output_df <- work_lib$get_dataset_as_dataframe(output_name)
           # Intentional assignment to global environment for Quarto workflow
-          assign(output_name, output_df, envir = .GlobalEnv)
+          assign(output_name, output_df, envir = knitr::knit_global())
         }
       }
     },
     error = function(e) {
-      output <<- paste("Error:", e$message)
+      stop(e$message)
     }
   )
-
-  # Note: We don't explicitly clean up the connection here as it may cause
-  # segmentation faults. The Python garbage collector will handle cleanup.
 
   knitr::engine_output(options, code, output)
 }

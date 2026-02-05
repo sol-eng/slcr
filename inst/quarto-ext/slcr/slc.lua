@@ -1,7 +1,7 @@
 function Meta(meta)
   -- Read the shared HTML resource file
   local directory = quarto.project and quarto.project.directory or "."
-  local resource_path = directory .. "/_extensions/slc/slc-resources.html"
+  local resource_path = directory .. "/_extensions/slcr/slc-resources.html"
 
   local handle = io.open(resource_path, "r")
   if not handle then

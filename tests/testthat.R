@@ -1,6 +1,4 @@
-# File: tests/testthat.R
-
 library(testthat)
-library(slcr)
+library(slcR)
 
-test_check("slcr")
+test_check("slcR")

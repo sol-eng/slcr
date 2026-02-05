@@ -5,49 +5,61 @@ template:
   bootstrap: 5
 
 home:
-  title: "slcr: SLC Integration for R and Quarto"
+  title: "slcR: SLC Integration for R and Quarto"
   description: >
-    The slcr package provides seamless integration between SLC (Statistical Linear Combinations) 
+    The slcR package provides seamless integration between SLC (SAS Language Compiler) 
     and R/Quarto environments, enabling statistical analysis using SLC syntax directly in 
     Quarto documents.
 
 reference:
-- title: "Core Functions"
-  desc: "Main functions for SLC integration"
+- title: "Core Classes"
+  desc: "Main R6 classes for SLC integration"
   contents:
-  - slc_engine
-  - slc_init
-  - slc_submit
+  - Slc
+  - Orb
+  - OrbObject
+  - ObjectAdapter
+
+- title: "WPS Integration"
+  desc: "Classes for WPS server interaction"
+  contents:
+  - WpsServer
+  - WpsSession
+  - WpsDataset
+  - WpsLibref
+  - WpsLogFile
+  - WpsListingFile
 
 - title: "Data Management"
-  desc: "Functions for reading and writing SLC data"
+  desc: "Classes for data handling"
   contents:
-  - read_slc_data
-  - write_slc_data
+  - Dataset
+  - Library
+  - CdrBuffer
 
 - title: "Quarto Integration"
   desc: "Functions for Quarto document integration"
   contents:
+  - slc_engine
   - setup_slc_quarto
   - slc_quarto_resources
-  - is_quarto_context
   - install_slc_extension
+  - has_slc_extension
+  - slc_resource_path
+  - is_quarto_context
 
 - title: "Utilities"
   desc: "Helper and utility functions"
   contents:
-  - setup_python_env
-  - get_slc_log
-  - slc_resource_path
-  - has_slc_extension
+  - saslog
+  - slc_r_exception
 
 articles:
 - title: "Getting Started"
   navbar: ~
   contents:
-  - chunk-options
+  - getting-started
   - quarto-workflow
-  - configuration-options
 
 navbar:
   structure:
@@ -57,9 +69,5 @@ navbar:
     articles:
       text: Articles
       menu:
-      - text: Chunk Options
-        href: articles/chunk-options.html
       - text: Quarto Workflow
         href: articles/quarto-workflow.html
-      - text: Configuration Options
-        href: articles/configuration-options.html

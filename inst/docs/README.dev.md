@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`slcr` is a native R package that provides an interface to Altair SLC (Statistical Language Compiler). It implements the complete ORB (Object Request Broker) protocol and WPS Link interface in pure R, eliminating Python dependencies. The package enables R users to execute SAS code, manage libraries and datasets, and interact with SLC sessions.
+`slcR` is a native R package that provides an interface to Altair SLC (Statistical Language Compiler). It implements the complete ORB (Object Request Broker) protocol and WPS Link interface in pure R, eliminating Python dependencies. The package enables R users to execute SAS code, manage libraries and datasets, and interact with SLC sessions.
 
 ## Development Commands
 
@@ -14,11 +14,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 devtools::install()
 
 # Load the package
-library(slcr)
+library(slcR)
 
 # Quick test (from run.R)
 devtools::install()
-library(slcr)
+library(slcR)
 x <- Slc$new()
 ```
 

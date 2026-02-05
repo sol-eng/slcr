@@ -1,10 +1,10 @@
-# slcr
+# slcR
 
 R interface to Altair SLC (Statistical Language Compiler).
 
 ## Installation
 
-You can install the development version of slcr from GitHub with:
+You can install the development version of slcR from GitHub with:
 
 ``` r
 # install.packages("devtools")
@@ -16,7 +16,7 @@ devtools::install_github("sol-eng/slcr")
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(slcr)
+library(slcR)
 
 # Create SLC connection
 slc <- Slc$new()

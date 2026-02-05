@@ -17,11 +17,11 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-The `slcr` package enables seamless integration between R and SLC (SAS Language Compiler) within Quarto documents. This vignette demonstrates how to combine R data manipulation with SLC statistical procedures in a single document.
+The `slcR` package enables seamless integration between R and SLC (SAS Language Compiler) within Quarto documents. This vignette demonstrates how to combine R data manipulation with SLC statistical procedures in a single document.
 
 ## Installing the SLC Quarto Extension
 
-The `slcr` package includes a Quarto extension that provides native support for SLC code blocks in Quarto documents. To use SLC code blocks with syntax highlighting and proper rendering, you need to install this extension.
+The `slcR` package includes a Quarto extension that provides native support for SLC code blocks in Quarto documents. To use SLC code blocks with syntax highlighting and proper rendering, you need to install this extension.
 
 ### Installation
 
@@ -29,7 +29,7 @@ First, install the extension in your Quarto project directory:
 
 ````{verbatim}
 ```{r install-extension}
-library(slcr)
+library(slcR)
 
 # Install the SLC Quarto extension in the current directory
 install_slc_extension()
@@ -51,7 +51,7 @@ Once the extension is installed, add it to your Quarto document's YAML header:
 title: "My SLC Analysis"
 format: html
 filters:
-  - slc
+  - slcr
 ---
 ```
 ````
@@ -71,7 +71,7 @@ knitr::knit_engines$set(slc = slcrR:slc_engine)
 
 ## Getting Started
 
-First, load the slcr package and initialize a connection:
+First, load the slcR package and initialize a connection:
 
 ````{verbatim}
 ```{r init}
@@ -415,7 +415,7 @@ if (length(logs) > 0) {
 
 ## Conclusion
 
-The `slcr` package provides a powerful bridge between R's data manipulation capabilities and SLC's statistical procedures. By combining both tools in Quarto documents, you can create comprehensive, reproducible analyses that leverage the strengths of both environments.
+The `slcR` package provides a powerful bridge between R's data manipulation capabilities and SLC's statistical procedures. By combining both tools in Quarto documents, you can create comprehensive, reproducible analyses that leverage the strengths of both environments.
 
 Key benefits:
 

@@ -43,7 +43,7 @@ Multiple datasets can be specified using comma-separated names:
 \section{Global Environment Assignment}{
 
 When \code{output_data} is specified, this function intentionally assigns
-the resulting dataset(s) to the global environment using \code{assign(..., envir = .GlobalEnv)}.
+the resulting dataset(s) to the global environment using \code{assign(..., envir = knitr::knit_global())}.
 This is the expected behavior to make SLC output data available for subsequent
 R code chunks in the same Quarto document.
 }

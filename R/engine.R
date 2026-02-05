@@ -86,6 +86,7 @@ slc_engine <- function(options) {
     {
       # Initialize SLC if needed
       connection <- Slc$new()
+      work_lib <- connection$get_library("WORK")
 
       # Handle input data if specified
       input_names <- parse_multiple_names(options$input_data)
@@ -103,7 +104,6 @@ slc_engine <- function(options) {
           if (!is.data.frame(input_data)) {
             stop("input_data '", input_name, "' must refer to a data.frame")
           }
-          work_lib <- connection$get_library("WORK")
           work_lib$create_dataset_from_dataframe(input_data)
         }
       }

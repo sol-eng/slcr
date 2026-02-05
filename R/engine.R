@@ -34,7 +34,7 @@
 #'
 #' @section Global Environment Assignment:
 #' When \code{output_data} is specified, this function intentionally assigns
-#' the resulting dataset(s) to the global environment using \code{assign(..., envir = .GlobalEnv)}.
+#' the resulting dataset(s) to the global environment using \code{assign(..., envir = knitr::knit_global())}.
 #' This is the expected behavior to make SLC output data available for subsequent
 #' R code chunks in the same Quarto document.
 #'
@@ -91,7 +91,7 @@ slc_engine <- function(options) {
       input_names <- parse_multiple_names(options$input_data)
       if (length(input_names) > 0) {
         for (input_name in input_names) {
-          if (!exists(input_name, envir = .GlobalEnv)) {
+          if (!exists(input_name, envir = knitr::knit_global())) {
             stop(
               "Object '",
               input_name,
@@ -99,7 +99,7 @@ slc_engine <- function(options) {
             )
           }
 
-          input_data <- get(input_name, envir = .GlobalEnv)
+          input_data <- get(input_name, envir = knitr::knit_global())
           if (!is.data.frame(input_data)) {
             stop("input_data '", input_name, "' must refer to a data.frame")
           }
@@ -125,7 +125,7 @@ slc_engine <- function(options) {
         for (output_name in output_names) {
           output_df <- work_lib$get_dataset_as_dataframe(output_name)
           # Intentional assignment to global environment for Quarto workflow
-          assign(output_name, output_df, envir = .GlobalEnv)
+          assign(output_name, output_df, envir = knitr::knit_global())
         }
       }
     },

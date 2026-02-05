@@ -85,7 +85,7 @@ slc_engine <- function(options) {
   tryCatch(
     {
       # Initialize SLC if needed
-      connection <- Slc$new
+      connection <- Slc$new()
 
       # Handle input data if specified
       input_names <- parse_multiple_names(options$input_data)
